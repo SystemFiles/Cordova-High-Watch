@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
+        <title>Hello World</title>
+        
+        <style>
+            .display-hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>High-Watch Prototype</h1>
+            <div class="form-area">
+                <form id="search-form">
+                    <label for="city">City Name: </label>
+                    <input type="text" id="city" />
+                    
+                    <input id="searchCity" type="button" alt="Search" value="Search" alt="Search" />
+                    <br/>
+                    <label id="errorNoResult" class="display-hidden" style="color: darkred;">
+                        Error: Could not find anything with that search!
+                    </label>
+                </form>
+            </div>
+            <div id="trafficInfo">
+                <img id="trafficImage" class="display-hidden" src="#" />
+            </div>
+        </div>
+<!--        <script type="text/javascript" src="cordova.js"></script>-->
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>
