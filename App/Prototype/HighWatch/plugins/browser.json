@@ -9,7 +9,14 @@
   "installed_plugins": {
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-http": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   },
-  "dependent_plugins": {}
+  "dependent_plugins": {
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    }
+  }
 }

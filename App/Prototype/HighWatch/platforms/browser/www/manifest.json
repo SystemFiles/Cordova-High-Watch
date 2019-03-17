@@ -4,8 +4,8 @@
   "name": "HighWatch",
   "short_name": "HighWatch",
   "version": "ca.sykesdev.highwatch",
-  "description": "A sample Apache Cordova application that responds to the deviceready event.",
-  "author": "Apache Cordova Team",
+  "description": "Highwatch traffic monitoring application for Android/IOS/Browsers.",
+  "author": "Malik Sheharyaar Talhat",
   "icons": [],
   "start_url": "index.html"
 }

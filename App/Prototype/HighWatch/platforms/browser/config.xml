@@ -2,13 +2,15 @@
 <widget id="ca.sykesdev.highwatch" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>HighWatch</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        Highwatch traffic monitoring application for Android/IOS/Browsers.
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="ben@sykesdev.ca" href="http://sykesdev.ca">
+        Malik Sheharyaar Talhat
     </author>
     <content src="index.html" />
     <access origin="*" />
+    <allow-intent href="*" />
+    <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />

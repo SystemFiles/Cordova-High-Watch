@@ -1,0 +1,21 @@
+document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById("searchCity").addEventListener("click", function() {
+                var getURL = "https://511on.ca/api/v2/get/";
+                var type = "cameras";
+                var format = "json";
+
+                var fullURL = getURL + type + "?format=" + format;
+                var searchTerm = $("#search-form").find("#city").val();
+                
+                document.getElementById("errorNoResult").style.display = 'none';
+                
+                ons.notification.alert("Searching for " + searchTerm + "...");
+                
+                app.sendRequest(fullURL, searchTerm);
+            });
+            
+            document.getElementById("errorNoResult").addEventListener("click", function() {
+                $(this).addClass("display-hidden");
+            });
+            
+        }, false);
