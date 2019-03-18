@@ -175,7 +175,7 @@ var app = {
                     // If response is not empty, we try to filter the response using search parameters
 
                     var cameras_road_name = httpResponse.filter(function (item) {
-                        return item.RoadwayName.match(road_name);
+                        return item.Description.match(road_name);
                     });
 
                     var camList = [];
