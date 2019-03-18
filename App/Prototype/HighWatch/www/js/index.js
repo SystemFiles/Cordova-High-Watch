@@ -28,8 +28,8 @@ var app = {
                   $("#result-list").on('click', '.res-item' , function() {
                       navigator.pushPage('target.html', {
                           data: {
-                              title: $(this).text(),
-                              url: 'https://511on.ca/map/Cctv/600004-0-2--1'
+                              id: $(this).text().split(']')[0].slice(1),
+                              title: $(this).text().split(']')[1],
                           }
                       });
                   });
@@ -71,16 +71,26 @@ var app = {
                   // The end page
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
                   
+                  app.getDataByUID(page.data.id, page.data.title).then(function(result) {
+                      $("#camImage").attr('src', result.url);
                   
-                  $("#camImage").attr('src', page.data.url);
-                  var $data = "<p class='infoField'>"
-                    + "ID: " + "filtered[k].Id" + "<br/>"
-                    + "Name: " + "filtered[k].Name" + "<br/>"
-                    + "City Name: " + "filtered[k].CityName" + "<br/>"
-                    + "Road Name: " + "filtered[k].RoadwayName" + "<br/>"
-                    + "Provided By: " + "filtered[k].Organization" + "</p>";
+                      var $data = "<p class='infoField'>"
+                        + "ID: " + result.id + "<br/>"
+                        + "Name: " + result.name + "<br/>"
+                        + "City Name: " + result.city + "<br/>"
+                        + "Road Name: " + result.desc + "<br/>"
+                        + "Provided By: " + result.org + "</p>";
 
-                    $("#trafficInfo").append($data);
+                      $("#trafficInfo").append($data);
+                      
+                      var $saveBtn = "<ons-button id='save-button' modifier='Material'>Save this Location!</ons-button>";
+                      
+                      // Add the save button to the page.
+                      $("ons-card").first().after($saveBtn);
+                      
+                  }).catch(function() {
+                      ons.notification.alert("Error processing the data...Try again later!");
+                  });
                   
               } else if (page.id === 'saved') {
                   var list = ['HWY 403', 'Lincoln M. Alexander Pkwy.'];
@@ -234,6 +244,39 @@ var app = {
         } else  {
             ons.notification.alert("No results using that search term...");
         }
+    },
+    
+    getDataByUID: function(uid, desc) {
+        return new Promise(function(resolve, reject) {
+            var getURL = "https://511on.ca/api/v2/get/";
+            var type = ["cameras", "roadconditions"];
+            var format = "json";
+            
+            // Ideally loop through types to get all information, but in this case we just use cameras
+            var fullUrl = getURL + type[0] + "?format=" + format;
+            
+            app.sendRequest(fullUrl).then(function(result) {
+                
+                var currentCam = result.filter(function(item) {
+                    return item.Id === uid && item.Description === desc.trim();
+                });
+                
+                // Need to use [0] index to find the first appearance because apparently, the 511on API returns cameras that have the EXACT SAME ID!!
+                resolve(
+                    {
+                        id: currentCam[0].Id,
+                        org: currentCam[0].Organization,
+                        roadName: currentCam[0].RoadwayName,
+                        lat: currentCam[0].Latitude,
+                        long: currentCam[0].Longitude,
+                        desc: currentCam[0].Description,
+                        city: currentCam[0].CityName,
+                        url: currentCam[0].Url,
+                        name: currentCam[0].Name
+                    }
+                );
+            });
+        });
     }
 };
 

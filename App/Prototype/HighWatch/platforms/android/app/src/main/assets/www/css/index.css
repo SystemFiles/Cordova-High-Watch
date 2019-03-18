@@ -115,7 +115,12 @@ label {
   height: 2px;
 }
 
-
+#save-button {
+    width: 95%;
+    margin-left: 2.5%;
+    text-align: center;
+    padding: 5px 20px;
+}
 
 
 
