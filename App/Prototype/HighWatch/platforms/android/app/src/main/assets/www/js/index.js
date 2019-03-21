@@ -1,9 +1,20 @@
 var app = {
     
+    getCoords: function(encodedPoly) {
+        $.getScript('/js/decodePolyLine.js', function() {
+            var decodedPoly = decode('cndkHpenyO_]aQqB_AwDkBeDeBko@w[iMuGea@eSkNmHuAk@_GaDyDoCqC_C}fDcyCuC{CoAyA_AiAwAoBcA}AeAcB_BwCuAuCEI}@qBqCgHcAaDoJ_\\{BaI_BsFcCcIwA{DqBwF}@gCu@eCm@_Ce@eCuB_Na@sBy@eDa@mAs@uBo@{A{@mBy@_ByA}Bc@m@qLyP_CcDqD_F_AyAqAwBkA}BkAoCeG_P{@mB{@wAaAyAcAqAw@w@aA{@_C{Bs@u@i@o@i@u@_@g@e@w@iAqByDaHiDiGiImOsAcCkTmg@_CuFqDoIgCcGcBuD}BgEaCoDgAmAsC{CqCwBgDwB{IkFgGoDeGsDiDqBaEcCkDuBmD}C{FuFgC{BeBkA_Ag@gImEc@[cAy@oAeAkAqAiAcBkAmB_AqBy@eBcAcCsI{ReCaEeAmAeAaA_DeBqBs@}A[oBKqADkNxAi[zDiLtCmBp@mAj@_BdAc@Z_Ax@sAxAm@v@u@hA_BrCmAtBk@bAeB~BoAzA_]p_@cCrCkBjCqBfD]n@sC~G_ApBm@fAkBnC_B~AuH`HgBrAqAt@A@wAf@s@PyAN{DJwEB}BF{GHuADmALi@LcAXuAn@q@b@{AtA{A~AwArAuAnA_BdAiB~@uJrEqCxAm@`@e@f@kJpKe@j@a@^kAx@A?oAj@C@yA\\uCf@{Bh@uWzHC?}VnCkBTiEt@{Dt@cAVwE~@gI`BqBb@mAN_ALC@{BDcBG{AMCAs@Q{Aa@gA_@gB}@gDgB{@a@aA]eB[iASoFy@mG{@gP}BuIkAy@MuAOqACqAHsA\\qAh@oAx@iAfAcApA}@zAs@bBo@nB{DzOYbAWv@]x@}@fBaArAi@`@');
+            
+            console.log(decodedPoly);
+        });
+    },
+    
     // Application Constructor
     initialize: function() {
         // Handles page navigation (For different views)
         document.addEventListener('init', function(event) {
+            
+              app.getCoords('');
+            
               var navigator = document.querySelector('#navigator')
               var page = event.target;
               if (page.id === 'home') {
@@ -175,7 +186,7 @@ var app = {
                     // If response is not empty, we try to filter the response using search parameters
 
                     var cameras_road_name = httpResponse.filter(function (item) {
-                        return item.RoadwayName.match(road_name);
+                        return item.Description.match(road_name);
                     });
 
                     var camList = [];
