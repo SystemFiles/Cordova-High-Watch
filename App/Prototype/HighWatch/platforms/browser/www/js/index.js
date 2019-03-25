@@ -8,7 +8,6 @@ var app = {
     },
     
     coordinatesInRange: function(decodedPoly, comparison, roadCompare) {
-        // TODO: Optimize later assuming given polyEncoded is sorted (maybe use binary search?)
         return new Promise(function(resolve, reject) {
             var length = decodedPoly.length; // Cache length
 
@@ -70,6 +69,8 @@ var app = {
               if (page.id === 'home') {
                   // Search Page
                   page.querySelector('ons-toolbar .center').innerHTML = 'High-Watch';
+                  
+                  // When the user executes a search
                   page.querySelector('#search').addEventListener('click', function() {
                       var searchTerm = $("#searchInput").val();
                       var searchType = $("input[name='searchType']:checked").val();
@@ -77,6 +78,12 @@ var app = {
                       navigator.pushPage('results.html', {data: {title: 'Results List', searchTerm: searchTerm, searchType: searchType}});
                   });
                   
+                  // When the Alert button is clicked
+                  page.querySelector('#alert-btn').addEventListener('click', function() {
+                      navigator.pushPage('alerts.html', {data: {title: 'Alerts / Road Warnings'}});
+                  });
+                  
+                  // Shows the currently saved cameras/roads
                   page.querySelector("#showSaved").addEventListener('click', function() {
                       navigator.pushPage('saved.html', {data: {title: 'Saved'}});
                   });
@@ -168,6 +175,9 @@ var app = {
                       $listItems += "<ons-list-item class='res-item' modifier='chevron' tappable>" + list[i] + "</ons-list-item>";
                   }
                   $("#saved-list").append($listItems);
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+              } else if (page.id === 'alerts') {
+                  // DO STUFF (GENERATE ALERTS LIST)
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
               }
         });
