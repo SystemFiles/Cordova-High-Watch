@@ -7,48 +7,44 @@ var app = {
         return allowed;
     },
     
-    coordinatesInRange: function(decodedPoly, comparison) {
+    coordinatesInRange: function(decodedPoly, comparison, roadCompare) {
         // TODO: Optimize later assuming given polyEncoded is sorted (maybe use binary search?)
-        
-        var length = decodedPoly.length; // Cache length
-        
-        // Perform search
-        for (var i=0; i < length; i++) {
-            if (
-                app.inRange(decodedPoly[i].latitude, comparison.latitude) == true &&
-                app.inRange(decodedPoly[i].longitude, comparison.longitude) == true
-               ) {
-                return true;
+        return new Promise(function(resolve, reject) {
+            var length = decodedPoly.length; // Cache length
+
+            // Perform search
+            for (var i=0; i < length; i++) {
+                if (
+                    app.inRange(decodedPoly[i].latitude, comparison.latitude) == true &&
+                    app.inRange(decodedPoly[i].longitude, comparison.longitude) == true
+                   ) {
+                    resolve({res: true, road: roadCompare});
+                }
             }
-        }
-        
-        return false;
+            resolve(false);
+        });
     },
     
-    // 
     findMatchingRoadConditions: function(jsonResult, lat, long) {
         return new Promise(function(resolve, reject) {
             $.getScript('/js/decodePolyLine.js', function() {
                 var jsonLength = jsonResult.length;
                 for (var i=0; i < jsonLength; i++) {
                     var decodedPoly = decode(jsonResult[i].EncodedPolyline);
-
-                    var result = app.coordinatesInRange(decodedPoly, {
+                    app.coordinatesInRange(decodedPoly, {
                         latitude: lat,
                         longitude: long
+                    }, jsonResult[i]).then(function(result) {
+                        if (result.res == true) {
+                            resolve(
+                                {
+                                    condition: result.road.Condition,
+                                    visibility: result.road.Visibility,
+                                    drifting: result.road.Drifting
+                                }
+                            );
+                        }
                     });
-                    
-                    if (result == true) {
-                        resolve(
-                            {
-                                condition: jsonResult[i].Condition,
-                                visibility: jsonResult[i].Visibility,
-                                drifting: jsonResult[i].Drifting
-                            }
-                        );
-                    } else {
-                        reject("Couldn't find condition information for this location. Sorry!");
-                    }
                 }
             });
         });
@@ -318,11 +314,9 @@ var app = {
     getDataByUID: function(uid, desc) {
         return new Promise(function(resolve, reject) {
             var getURL = "https://511on.ca/api/v2/get/";
-            var type = ["cameras", "roadconditions"];
+            var type = "cameras";
             var format = "json";
-            
-            // Ideally loop through types to get all information, but in this case we just use cameras
-            var fullUrl = getURL + type[0] + "?format=" + format;
+            var fullUrl = getURL + type + "?format=" + format;
             
             app.sendRequest(fullUrl).then(function(result) {
                 
@@ -332,8 +326,8 @@ var app = {
                 
                 // Do search for auxillary information about road conditions
                 app.getRoadConditionsJSON().then(function(resultJSON) {
-                    
                     app.findMatchingRoadConditions(resultJSON, currentCam[0].Latitude, currentCam[0].Longitude).then(function(conditions) {
+                        console.log(conditions);
                         resolve(
                             {
                                 id: currentCam[0].Id,
@@ -345,17 +339,38 @@ var app = {
                                 city: currentCam[0].CityName,
                                 url: currentCam[0].Url,
                                 name: currentCam[0].Name,
-                                condition: conditions.condition,
+                                condition: conditions.condition[0],
                                 visibility: conditions.visibility,
                                 drifting: conditions.drifting
                             }
                         );
                     }).catch(function(msg) {
                         ons.notification.alert(msg);
+                        // Event if the condition search fails we want to show the basic road information along with the picture.
+                        resolve(
+                            {
+                                id: currentCam[0].Id,
+                                org: currentCam[0].Organization,
+                                roadName: currentCam[0].RoadwayName,
+                                lat: currentCam[0].Latitude,
+                                long: currentCam[0].Longitude,
+                                desc: currentCam[0].Description,
+                                city: currentCam[0].CityName,
+                                url: currentCam[0].Url,
+                                name: currentCam[0].Name,
+                                condition: null,
+                                visibility: null,
+                                drifting: null
+                            }
+                        );
                     });
                 });
             });
         });
+    },
+    
+    saveRoadToFirebase: function(roadInformation) {
+        // TODO;
     }
 };
 

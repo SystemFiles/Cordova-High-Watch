@@ -36,8 +36,6 @@ var app = {
                         longitude: long
                     }, jsonResult[i]).then(function(result) {
                         if (result.res == true) {
-                            console.log("!!!MATCHING ROAD FOUND!!!");
-                            console.log(result.road);
                             resolve(
                                 {
                                     condition: result.road.Condition,
@@ -316,11 +314,9 @@ var app = {
     getDataByUID: function(uid, desc) {
         return new Promise(function(resolve, reject) {
             var getURL = "https://511on.ca/api/v2/get/";
-            var type = ["cameras", "roadconditions"];
+            var type = "cameras";
             var format = "json";
-            
-            // Ideally loop through types to get all information, but in this case we just use cameras
-            var fullUrl = getURL + type[0] + "?format=" + format;
+            var fullUrl = getURL + type + "?format=" + format;
             
             app.sendRequest(fullUrl).then(function(result) {
                 
@@ -350,6 +346,7 @@ var app = {
                         );
                     }).catch(function(msg) {
                         ons.notification.alert(msg);
+                        // Event if the condition search fails we want to show the basic road information along with the picture.
                         resolve(
                             {
                                 id: currentCam[0].Id,
@@ -370,6 +367,10 @@ var app = {
                 });
             });
         });
+    },
+    
+    saveRoadToFirebase: function(roadInformation) {
+        // TODO;
     }
 };
 
