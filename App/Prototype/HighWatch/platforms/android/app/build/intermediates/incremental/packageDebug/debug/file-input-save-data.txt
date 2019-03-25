@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sat Mar 16 16:22:04 EDT 2019
+#Thu Mar 21 19:08:37 EDT 2019
 60.set=ASSET
 52.set=ASSET
 53.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
@@ -38,6 +38,7 @@
 23.path=www/plugins/cordova-plugin-file/www/DirectoryReader.js
 70.path=www/lib/font_awesome/fonts/fa-regular-400.svg
 21.baseType=DIRECTORY
+77.path=www/plugins/cordova-plugin-file/www/requestFileSystem.js
 8.set=ASSET
 30.path=www/plugins/cordova-plugin-file/www/FileUploadResult.js
 48.baseType=DIRECTORY
@@ -84,7 +85,7 @@
 22.path=www/lib/onsenui-fonts.css
 29.path=www/plugins/cordova-plugin-file/www/DirectoryEntry.js
 2.baseType=DIRECTORY
-76.path=www/plugins/cordova-plugin-file/www/requestFileSystem.js
+76.path=www/lib/onsenui.min.js
 6.set=ASSET
 53.baseType=DIRECTORY
 13.baseType=DIRECTORY
@@ -122,12 +123,13 @@
 59.baseType=DIRECTORY
 62.baseType=DIRECTORY
 34.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
+77.set=ASSET
 68.path=www/lib/ionicons/fonts/ionicons.svg
 69.set=ASSET
 4.baseType=DIRECTORY
 21.path=www/lib/material-design-iconic-font/fonts/Material-Design-Iconic-Font.woff2
 28.path=www/lib/pace.min.js
-75.path=www/lib/onsenui.min.js
+75.path=www/plugins/cordova-plugin-file/www/FileEntry.js
 4.set=ASSET
 55.baseType=DIRECTORY
 15.baseType=DIRECTORY
@@ -173,7 +175,7 @@
 17.baseType=DIRECTORY
 27.path=www/plugins/cordova-plugin-file/www/FileUploadOptions.js
 2.set=ASSET
-74.path=www/plugins/cordova-plugin-file/www/FileEntry.js
+74.path=www/js/decodePolyLine.js
 20.baseType=DIRECTORY
 42.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
 34.path=www/plugins/cordova-plugin-file/www/FileError.js
@@ -196,7 +198,7 @@
 18.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
 50.path=www/lib/font_awesome/css/font-awesome.css
 65.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
-count=77
+count=78
 57.path=www/lib/font_awesome/fonts/fa-brands-400.eot
 10.path=www/cordova-js-src/plugin/android/app.js
 25.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
@@ -276,6 +278,7 @@ count=77
 46.set=ASSET
 38.set=ASSET
 41.path=www/lib/font_awesome/css/v4-shims.min.css
+77.baseType=DIRECTORY
 14.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
 4.path=www/cordova-js-src/exec.js
 37.baseType=DIRECTORY
@@ -288,6 +291,7 @@ count=77
 23.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
 15.path=www/plugins/cordova-plugin-file/www/fileSystems-roots.js
 70.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
+77.base=/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/assets/debug
 61.set=ASSET
 53.set=ASSET
 63.baseType=DIRECTORY

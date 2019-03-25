@@ -1,10 +1,67 @@
 var app = {
     
-    getCoords: function(encodedPoly) {
-        $.getScript('/js/decodePolyLine.js', function() {
-            var decodedPoly = decode('cndkHpenyO_]aQqB_AwDkBeDeBko@w[iMuGea@eSkNmHuAk@_GaDyDoCqC_C}fDcyCuC{CoAyA_AiAwAoBcA}AeAcB_BwCuAuCEI}@qBqCgHcAaDoJ_\\{BaI_BsFcCcIwA{DqBwF}@gCu@eCm@_Ce@eCuB_Na@sBy@eDa@mAs@uBo@{A{@mBy@_ByA}Bc@m@qLyP_CcDqD_F_AyAqAwBkA}BkAoCeG_P{@mB{@wAaAyAcAqAw@w@aA{@_C{Bs@u@i@o@i@u@_@g@e@w@iAqByDaHiDiGiImOsAcCkTmg@_CuFqDoIgCcGcBuD}BgEaCoDgAmAsC{CqCwBgDwB{IkFgGoDeGsDiDqBaEcCkDuBmD}C{FuFgC{BeBkA_Ag@gImEc@[cAy@oAeAkAqAiAcBkAmB_AqBy@eBcAcCsI{ReCaEeAmAeAaA_DeBqBs@}A[oBKqADkNxAi[zDiLtCmBp@mAj@_BdAc@Z_Ax@sAxAm@v@u@hA_BrCmAtBk@bAeB~BoAzA_]p_@cCrCkBjCqBfD]n@sC~G_ApBm@fAkBnC_B~AuH`HgBrAqAt@A@wAf@s@PyAN{DJwEB}BF{GHuADmALi@LcAXuAn@q@b@{AtA{A~AwArAuAnA_BdAiB~@uJrEqCxAm@`@e@f@kJpKe@j@a@^kAx@A?oAj@C@yA\\uCf@{Bh@uWzHC?}VnCkBTiEt@{Dt@cAVwE~@gI`BqBb@mAN_ALC@{BDcBG{AMCAs@Q{Aa@gA_@gB}@gDgB{@a@aA]eB[iASoFy@mG{@gP}BuIkAy@MuAOqACqAHsA\\qAh@oAx@iAfAcApA}@zAs@bBo@nB{DzOYbAWv@]x@}@fBaArAi@`@');
-            
-            console.log(decodedPoly);
+    inRange: function(x, y) {
+        const allowable = 0.02;
+        var sum = Math.abs(x - y);
+        var allowed = ((allowable * -1 <= sum) && (sum <= allowable));
+        return allowed;
+    },
+    
+    coordinatesInRange: function(decodedPoly, comparison) {
+        // TODO: Optimize later assuming given polyEncoded is sorted (maybe use binary search?)
+        
+        var length = decodedPoly.length; // Cache length
+        
+        // Perform search
+        for (var i=0; i < length; i++) {
+            if (
+                app.inRange(decodedPoly[i].latitude, comparison.latitude) == true &&
+                app.inRange(decodedPoly[i].longitude, comparison.longitude) == true
+               ) {
+                return true;
+            }
+        }
+        
+        return false;
+    },
+    
+    // 
+    findMatchingRoadConditions: function(jsonResult, lat, long) {
+        return new Promise(function(resolve, reject) {
+            $.getScript('/js/decodePolyLine.js', function() {
+                var jsonLength = jsonResult.length;
+                for (var i=0; i < jsonLength; i++) {
+                    var decodedPoly = decode(jsonResult[i].EncodedPolyline);
+
+                    var result = app.coordinatesInRange(decodedPoly, {
+                        latitude: lat,
+                        longitude: long
+                    });
+                    
+                    if (result == true) {
+                        resolve(
+                            {
+                                condition: jsonResult[i].Condition,
+                                visibility: jsonResult[i].Visibility,
+                                drifting: jsonResult[i].Drifting
+                            }
+                        );
+                    } else {
+                        reject("Couldn't find condition information for this location. Sorry!");
+                    }
+                }
+            });
+        });
+    },
+    
+    getRoadConditionsJSON: function() {
+        return new Promise(function(resolve, reject) {
+            var conditionURL = "https://511on.ca/api/v2/get/roadconditions?format=json";
+            app.sendRequest(conditionURL).then(function(result) {
+                resolve(result);
+            }).catch(function(msg) {
+                ons.notification.alert(msg);
+            });
         });
     },
     
@@ -12,9 +69,6 @@ var app = {
     initialize: function() {
         // Handles page navigation (For different views)
         document.addEventListener('init', function(event) {
-            
-              app.getCoords('');
-            
               var navigator = document.querySelector('#navigator')
               var page = event.target;
               if (page.id === 'home') {
@@ -90,7 +144,11 @@ var app = {
                         + "Name: " + result.name + "<br/>"
                         + "City Name: " + result.city + "<br/>"
                         + "Road Name: " + result.desc + "<br/>"
-                        + "Provided By: " + result.org + "</p>";
+                        + "Provided By: " + result.org + "<br/>"
+                        + "Current Road Condition: " + result.condition + "<br/>"
+                        + "Current Visibility: " + result.visibility + "<br/>"
+                        + "Presence of driving snow?: " + result.drifting + 
+                          "</p>";
 
                       $("#trafficInfo").append($data);
                       
@@ -272,20 +330,30 @@ var app = {
                     return item.Id === uid && item.Description === desc.trim();
                 });
                 
-                // Need to use [0] index to find the first appearance because apparently, the 511on API returns cameras that have the EXACT SAME ID!!
-                resolve(
-                    {
-                        id: currentCam[0].Id,
-                        org: currentCam[0].Organization,
-                        roadName: currentCam[0].RoadwayName,
-                        lat: currentCam[0].Latitude,
-                        long: currentCam[0].Longitude,
-                        desc: currentCam[0].Description,
-                        city: currentCam[0].CityName,
-                        url: currentCam[0].Url,
-                        name: currentCam[0].Name
-                    }
-                );
+                // Do search for auxillary information about road conditions
+                app.getRoadConditionsJSON().then(function(resultJSON) {
+                    
+                    app.findMatchingRoadConditions(resultJSON, currentCam[0].Latitude, currentCam[0].Longitude).then(function(conditions) {
+                        resolve(
+                            {
+                                id: currentCam[0].Id,
+                                org: currentCam[0].Organization,
+                                roadName: currentCam[0].RoadwayName,
+                                lat: currentCam[0].Latitude,
+                                long: currentCam[0].Longitude,
+                                desc: currentCam[0].Description,
+                                city: currentCam[0].CityName,
+                                url: currentCam[0].Url,
+                                name: currentCam[0].Name,
+                                condition: conditions.condition,
+                                visibility: conditions.visibility,
+                                drifting: conditions.drifting
+                            }
+                        );
+                    }).catch(function(msg) {
+                        ons.notification.alert(msg);
+                    });
+                });
             });
         });
     }
