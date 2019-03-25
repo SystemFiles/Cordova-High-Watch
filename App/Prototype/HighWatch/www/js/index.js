@@ -160,6 +160,11 @@ var app = {
                       // Add the save button to the page.
                       $("ons-card").first().after($saveBtn);
                       
+                      // Save the current location
+                      $("#save-button").on('click', function() {
+                          app.saveRoadToFirebase(result);
+                      });
+                      
                   }).catch(function() {
                       ons.notification.alert("Error processing the data...Try again later!");
                   });
@@ -381,6 +386,7 @@ var app = {
     
     saveRoadToFirebase: function(roadInformation) {
         // TODO;
+        console.log(roadInformation);
     }
 };
 
