@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src *; img-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+        <meta http-equiv="Content-Security-Policy" content="default-src *; img-src *; style-src 'self' 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
 
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" type="text/css" href="css/index.css">
@@ -28,6 +28,11 @@
             <ons-page id="home">
                 <ons-toolbar>
                     <div class="center"></div>
+                    <div class="right">
+                        <ons-toolbar-button id="alert-btn">
+                            <span class="fas fa-exclamation-triangle"></span>
+                        </ons-toolbar-button>
+                    </div>
                 </ons-toolbar>
 
                 <div class="text-center">
@@ -134,7 +139,21 @@
                 
             </ons-page>
         </template>
-<!--        <script type="text/javascript" src="cordova.js"></script>-->
+        
+        <template id="alerts.html">
+            <ons-page id="alerts">
+                <ons-toolbar>
+                    <div class="left"><ons-back-button>Back</ons-back-button></div>
+                    <div class="center"></div>
+                </ons-toolbar>
+                
+                <ons-list id="alert-list">
+                </ons-list>
+            </ons-page>
+        </template>
+        
+        <!-- Load in Scripts -->
+        <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>

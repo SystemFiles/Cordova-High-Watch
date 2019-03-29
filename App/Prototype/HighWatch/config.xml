@@ -19,6 +19,7 @@
     <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
+    <allow-indent href="file:///*" />
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
@@ -33,5 +34,4 @@
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-plugin-http" spec="^1.2.0" />
     <engine name="browser" spec="^5.0.4" />
-    <engine name="android" spec="^7.1.4" />
 </widget>
