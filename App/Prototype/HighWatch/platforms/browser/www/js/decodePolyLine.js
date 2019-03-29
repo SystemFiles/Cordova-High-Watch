@@ -1,3 +1,5 @@
+// BASIS FUNCTION FOR DECODING GOOGLE ENCODED POLYLINE COORDINATES
+
 function decode(encoded){
 
     // array that holds the points
