@@ -43,7 +43,6 @@ var app = {
     },
 
     coordinatesInRange: function(decodedPoly, comparison, roadCompare) {
-        // TODO: Optimize later assuming given polyEncoded is sorted (maybe use binary search?)
         return new Promise(function(resolve, reject) {
             var length = decodedPoly.length; // Cache length
 
@@ -115,6 +114,10 @@ var app = {
                 page.querySelector("#showSaved").addEventListener('click', function() {
                     navigator.pushPage('saved.html', {data: {title: 'Saved'}});
                 });
+                
+                page.querySelector("#alert-btn").addEventListener('click', function() {
+                    navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}})
+                });
 
             } else if (page.id === 'results') {
                 // Set view title
@@ -160,33 +163,41 @@ var app = {
                         + "Provided By: " + result.org + "<br/>"
                         + "Current Road Condition: " + result.condition + "<br/>"
                         + "Current Visibility: " + result.visibility + "<br/>"
-                        + "Presence of driving snow?: " + result.drifting +
-                        "</p>";
+                        + "Presence of driving snow?: " + result.drifting + 
+                          "</p>";
 
-                    $("#trafficInfo").append($data);
-
-                    var $saveBtn = "<ons-button id='save-button' modifier='Material'>Save this Location!</ons-button>";
-
-                    // Add the save button to the page.
-                    $("ons-card").first().after($saveBtn);
-
-                }).catch(function() {
-                    ons.notification.alert("Error processing the data...Try again later!");
-                });
-
-            } else if (page.id === 'saved') {
-                var list = ['HWY 403', 'Lincoln M. Alexander Pkwy.'];
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-
-                // Build list of results
-                var $listItems = "";
-                var numItems = list.length;
-                for (var i=0; i < numItems; i++) {
-                    $listItems += "<ons-list-item class='res-item' modifier='chevron' tappable>" + list[i] + "</ons-list-item>";
-                }
-                $("#saved-list").append($listItems);
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-            }
+                      $("#trafficInfo").append($data);
+                      
+                      var $saveBtn = "<ons-button id='save-button' modifier='Material'>Save this Location!</ons-button>";
+                      
+                      // Add the save button to the page.
+                      $("ons-card").first().after($saveBtn);
+                      
+                      // Save the current location
+                      $("#save-button").on('click', function() {
+                          app.saveRoadToFirebase(result);
+                      });
+                      
+                  }).catch(function() {
+                      ons.notification.alert("Error processing the data...Try again later!");
+                  });
+                  
+              } else if (page.id === 'saved') {
+                  var list = ['HWY 403', 'Lincoln M. Alexander Pkwy.'];
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                  
+                  // Build list of results
+                  var $listItems = "";
+                  var numItems = list.length;
+                  for (var i=0; i < numItems; i++) {
+                      $listItems += "<ons-list-item class='res-item' modifier='chevron' tappable>" + list[i] + "</ons-list-item>";
+                  }
+                  $("#saved-list").append($listItems);
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+              } else if (page.id === 'alerts') {
+                  // DO STUFF (GENERATE ALERTS LIST)
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+              }
         });
     },
 
@@ -326,6 +337,7 @@ var app = {
 
     saveRoadToFirebase: function(roadInformation) {
         // TODO;
+        console.log(roadInformation);
     }
 };
 
