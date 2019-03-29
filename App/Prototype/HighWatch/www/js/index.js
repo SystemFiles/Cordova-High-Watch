@@ -114,6 +114,10 @@ var app = {
                 page.querySelector("#showSaved").addEventListener('click', function() {
                     navigator.pushPage('saved.html', {data: {title: 'Saved'}});
                 });
+                
+                page.querySelector("#alert-btn").addEventListener('click', function() {
+                    navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}})
+                });
 
             } else if (page.id === 'results') {
                 // Set view title
