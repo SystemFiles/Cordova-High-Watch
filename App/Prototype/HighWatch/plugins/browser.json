@@ -12,10 +12,29 @@
     },
     "cordova-plugin-http": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-buildinfo": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-universal-links-plugin": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-browsertab": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-customurlscheme": {
+      "URL_SCHEME": "com.firebase.cordova",
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   },
   "dependent_plugins": {
     "cordova-plugin-file": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-compat": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   }

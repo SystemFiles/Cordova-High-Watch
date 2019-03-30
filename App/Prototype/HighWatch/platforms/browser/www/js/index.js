@@ -1,5 +1,132 @@
 var app = {
 
+    // Application Constructor
+    initialize: function() {
+        // Event is after deviceready and library loaded...
+        document.addEventListener('init', function(event) {
+            // Firebase authentication provider
+            var authProvider = new firebase.auth.GoogleAuthProvider();
+            
+            // Handles page navigation (For different views)
+            var navigator = document.querySelector('#navigator')
+            var page = event.target;
+            if (page.id === 'home') {
+                // Search Page
+                page.querySelector('ons-toolbar .center').innerHTML = 'High-Watch';
+                page.querySelector('#search').addEventListener('click', function() {
+                    var searchTerm = $("#searchInput").val();
+                    var searchType = $("input[name='searchType']:checked").val();
+
+                    navigator.pushPage('results.html', {data: {title: 'Results List', searchTerm: searchTerm, searchType: searchType}});
+                });
+
+                page.querySelector("#showSaved").addEventListener('click', function() {
+                    navigator.pushPage('saved.html', {data: {title: 'Saved'}});
+                });
+                
+                page.querySelector("#alert-btn").addEventListener('click', function() {
+                    navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}})
+                });
+                
+                page.querySelector('#login-btn').addEventListener('click', function() {
+                    // Store the current user data after logging in..
+                    var curUser;
+                    app.userLogin(authProvider).then(function(result) {
+                        curUser = result;
+                        
+                        $('#login-btn').find('span').first().text(result.user);
+                        
+                        console.log("Result: ");
+                        console.log(result);
+                        
+                        ons.notification.alert(result);
+                    }).catch(function() {
+                        console.log("FAILED");
+                    });
+                });
+
+            } else if (page.id === 'results') {
+                // Set view title
+                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+
+                // Setup event handlers (using event delegation)
+                $("#result-list").on('click', '.res-item' , function() {
+                    navigator.pushPage('target.html', {
+                        data: {
+                            id: $(this).text().split(']')[0].slice(1),
+                            title: $(this).text().split(']')[1],
+                        }
+                    });
+                });
+
+                // Prohibit blank searches (This will return the entire JSON response for everything in 511on DB
+                if (page.data.searchTerm.length == 0) {
+                    ons.notification.alert("Cannot find anything with that search term...");
+                    return;
+                }
+
+                // List of results
+                var list = [];
+
+                // Start Searching and populate results list
+                app.searchCategory(page.data.searchTerm,page.data.searchType).then(function(result){
+                    list = result;
+                    app.buildResultList(list); // Build list of results and display them
+                });
+
+            } else if (page.id === 'targetResult') {
+                // The end page
+                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+
+                app.getDataByUID(page.data.id, page.data.title).then(function(result) {
+                    $("#camImage").attr('src', result.url);
+
+                    var $data = "<p class='infoField'>"
+                        + "ID: " + result.id + "<br/>"
+                        + "Name: " + result.name + "<br/>"
+                        + "City Name: " + result.city + "<br/>"
+                        + "Road Name: " + result.desc + "<br/>"
+                        + "Provided By: " + result.org + "<br/>"
+                        + "Current Road Condition: " + result.condition + "<br/>"
+                        + "Current Visibility: " + result.visibility + "<br/>"
+                        + "Presence of driving snow?: " + result.drifting + 
+                          "</p>";
+
+                      $("#trafficInfo").append($data);
+                      
+                      var $saveBtn = "<ons-button id='save-button' modifier='Material'>Save this Location!</ons-button>";
+                      
+                      // Add the save button to the page.
+                      $("ons-card").first().after($saveBtn);
+                      
+                      // Save the current location
+                      $("#save-button").on('click', function() {
+                          app.saveRoadToFirebase(result.id);
+                      });
+                      
+                  }).catch(function() {
+                      ons.notification.alert("Error processing the data...Try again later!");
+                  });
+                  
+              } else if (page.id === 'saved') {
+                  var list = ['HWY 403', 'Lincoln M. Alexander Pkwy.'];
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                  
+                  // Build list of results
+                  var $listItems = "";
+                  var numItems = list.length;
+                  for (var i=0; i < numItems; i++) {
+                      $listItems += "<ons-list-item class='res-item' modifier='chevron' tappable>" + list[i] + "</ons-list-item>";
+                  }
+                  $("#saved-list").append($listItems);
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+              } else if (page.id === 'alerts') {
+                  // DO STUFF (GENERATE ALERTS LIST)
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+              }
+        });
+    },
+    
     decodePolyline: function(encoded) {
 
         // array that holds the points
@@ -92,112 +219,6 @@ var app = {
             }).catch(function(msg) {
                 ons.notification.alert(msg);
             });
-        });
-    },
-
-    // Application Constructor
-    initialize: function() {
-        // Handles page navigation (For different views)
-        document.addEventListener('init', function(event) {
-            var navigator = document.querySelector('#navigator')
-            var page = event.target;
-            if (page.id === 'home') {
-                // Search Page
-                page.querySelector('ons-toolbar .center').innerHTML = 'High-Watch';
-                page.querySelector('#search').addEventListener('click', function() {
-                    var searchTerm = $("#searchInput").val();
-                    var searchType = $("input[name='searchType']:checked").val();
-
-                    navigator.pushPage('results.html', {data: {title: 'Results List', searchTerm: searchTerm, searchType: searchType}});
-                });
-
-                page.querySelector("#showSaved").addEventListener('click', function() {
-                    navigator.pushPage('saved.html', {data: {title: 'Saved'}});
-                });
-                
-                page.querySelector("#alert-btn").addEventListener('click', function() {
-                    navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}})
-                });
-
-            } else if (page.id === 'results') {
-                // Set view title
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-
-                // Setup event handlers (using event delegation)
-                $("#result-list").on('click', '.res-item' , function() {
-                    navigator.pushPage('target.html', {
-                        data: {
-                            id: $(this).text().split(']')[0].slice(1),
-                            title: $(this).text().split(']')[1],
-                        }
-                    });
-                });
-
-                // Prohibit blank searches (This will return the entire JSON response for everything in 511on DB
-                if (page.data.searchTerm.length == 0) {
-                    ons.notification.alert("Cannot find anything with that search term...");
-                    return;
-                }
-
-                // List of results
-                var list = [];
-
-                // Start Searching and populate results list
-                app.searchCategory(page.data.searchTerm,page.data.searchType).then(function(result){
-                    list = result;
-                    app.buildResultList(list); // Build list of results and display them
-                });
-
-            } else if (page.id === 'targetResult') {
-                // The end page
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-
-                app.getDataByUID(page.data.id, page.data.title).then(function(result) {
-                    $("#camImage").attr('src', result.url);
-
-                    var $data = "<p class='infoField'>"
-                        + "ID: " + result.id + "<br/>"
-                        + "Name: " + result.name + "<br/>"
-                        + "City Name: " + result.city + "<br/>"
-                        + "Road Name: " + result.desc + "<br/>"
-                        + "Provided By: " + result.org + "<br/>"
-                        + "Current Road Condition: " + result.condition + "<br/>"
-                        + "Current Visibility: " + result.visibility + "<br/>"
-                        + "Presence of driving snow?: " + result.drifting + 
-                          "</p>";
-
-                      $("#trafficInfo").append($data);
-                      
-                      var $saveBtn = "<ons-button id='save-button' modifier='Material'>Save this Location!</ons-button>";
-                      
-                      // Add the save button to the page.
-                      $("ons-card").first().after($saveBtn);
-                      
-                      // Save the current location
-                      $("#save-button").on('click', function() {
-                          app.saveRoadToFirebase(result);
-                      });
-                      
-                  }).catch(function() {
-                      ons.notification.alert("Error processing the data...Try again later!");
-                  });
-                  
-              } else if (page.id === 'saved') {
-                  var list = ['HWY 403', 'Lincoln M. Alexander Pkwy.'];
-                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-                  
-                  // Build list of results
-                  var $listItems = "";
-                  var numItems = list.length;
-                  for (var i=0; i < numItems; i++) {
-                      $listItems += "<ons-list-item class='res-item' modifier='chevron' tappable>" + list[i] + "</ons-list-item>";
-                  }
-                  $("#saved-list").append($listItems);
-                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-              } else if (page.id === 'alerts') {
-                  // DO STUFF (GENERATE ALERTS LIST)
-                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-              }
         });
     },
 
@@ -335,9 +356,29 @@ var app = {
         });
     },
 
-    saveRoadToFirebase: function(roadInformation) {
+    saveRoadToFirebase: function(roadUID) {
         // TODO;
-        console.log(roadInformation);
+        console.log(roadUID);
+    },
+    
+    userLogin: function(provider) {
+        // TODO; (https://firebase.google.com/docs/auth/web/cordova)
+        return new Promise(function(resolve, reject) {
+            firebase.auth().signInWithRedirect(provider).then(function() {
+                firebase.auth().getRedirectResult();
+            }).then(function(result) {
+              // The signed-in user info.
+//              var user = result.user;
+            
+              resolve(result);
+            }).catch(function(error) {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+            
+              ons.notification.alert(errorCode + ": " + errorMessage);
+            });
+        }); 
     }
 };
 
