@@ -107,10 +107,10 @@ ADDED from /Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/
 	android:path
 		ADDED from /Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/AndroidManifest.xml:28:80-112
 	android:host
-		ADDED from /Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/AndroidManifest.xml:22:15-49
+		ADDED from /Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/AndroidManifest.xml:22:15-54
 	android:scheme
 		ADDED from /Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/AndroidManifest.xml:16:15-52
-intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:highwatch.page.link+data:scheme:https
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:highwatch.page.link/3Q85+data:scheme:https
 ADDED from /Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/AndroidManifest.xml:18:7-23:23
 	android:autoVerify
 		ADDED from /Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/AndroidManifest.xml:18:22-47

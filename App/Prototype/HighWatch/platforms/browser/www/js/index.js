@@ -1,12 +1,11 @@
 var app = {
-
+    currentUser: null,
+    loggedIn: false,
+    
     // Application Constructor
     initialize: function() {
         // Event is after deviceready and library loaded...
         document.addEventListener('init', function(event) {
-            // Firebase authentication provider
-            var authProvider = new firebase.auth.GoogleAuthProvider();
-            
             // Handles page navigation (For different views)
             var navigator = document.querySelector('#navigator')
             var page = event.target;
@@ -30,19 +29,17 @@ var app = {
                 
                 page.querySelector('#login-btn').addEventListener('click', function() {
                     // Store the current user data after logging in..
-                    var curUser;
-                    app.userLogin(authProvider).then(function(result) {
-                        curUser = result;
-                        
-                        $('#login-btn').find('span').first().text(result.user);
-                        
-                        console.log("Result: ");
-                        console.log(result);
-                        
-                        ons.notification.alert(result);
-                    }).catch(function() {
-                        console.log("FAILED");
-                    });
+                    
+                    if (!app.loggedIn) {
+                        app.userLogin().then(function(result) {
+                            $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
+
+                            app.loggedIn = true;
+                            app.currentUser = result;
+                        });
+                    } else {
+                        // DO LOGOUT
+                    }
                 });
 
             } else if (page.id === 'results') {
@@ -361,22 +358,26 @@ var app = {
         console.log(roadUID);
     },
     
-    userLogin: function(provider) {
+    userLogin: function() {
         // TODO; (https://firebase.google.com/docs/auth/web/cordova)
         return new Promise(function(resolve, reject) {
-            firebase.auth().signInWithRedirect(provider).then(function() {
-                firebase.auth().getRedirectResult();
-            }).then(function(result) {
-              // The signed-in user info.
-//              var user = result.user;
+            // Firebase authentication provider
+            const authProvider = new firebase.auth.GoogleAuthProvider();
             
-              resolve(result);
+            firebase.auth().signInWithRedirect(authProvider).then(function() {
+              return firebase.auth().getRedirectResult();
+            }).then(function(result) {
+              // This gives you a Google Access Token.
+              // You can use it to access the Google API.
+              var token = result.credential.accessToken;
+              // The signed-in user info.
+              var user = result.user;
+              // send the data to caller
+              resolve(user);
             }).catch(function(error) {
               // Handle Errors here.
               var errorCode = error.code;
               var errorMessage = error.message;
-            
-              ons.notification.alert(errorCode + ": " + errorMessage);
             });
         }); 
     }

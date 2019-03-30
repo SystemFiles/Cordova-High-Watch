@@ -19,7 +19,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <universal-links>
-        <host name="highwatch.page.link" scheme="https" />
+        <host name="highwatch.page.link/3Q85" scheme="https" />
         <host name="high-watch.firebaseapp.com" scheme="https">
             <path url="/__/auth/callback" />
         </host>
