@@ -36,9 +36,21 @@ var app = {
 
                             app.loggedIn = true;
                             app.currentUser = result;
+                            
+                            ons.notification.alert("Thanks for signing in " +
+                                                  app.currentUser.displayName + "!");
                         });
                     } else {
-                        // DO LOGOUT
+                        app.userLogout().then(function() {
+                            app.loggedIn = false;
+                            app.currentUser = null;
+                            ons.notification.alert("Signed out successfully!");
+                            
+                            // Change the icon back to login button icon
+                            $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
+                        }).catch(function() {
+                            ons.notification.alert("Error attempting to sign out..");
+                        });
                     }
                 });
 
@@ -98,7 +110,11 @@ var app = {
                       
                       // Save the current location
                       $("#save-button").on('click', function() {
-                          app.saveRoadToFirebase(result.id);
+                          app.saveRoadToFirebase(result.id, result.desc).then(function(success) {
+                              ons.notification.alert(success);
+                              
+                              $('#save-button').hide();
+                          });
                       });
                       
                   }).catch(function() {
@@ -353,13 +369,25 @@ var app = {
         });
     },
 
-    saveRoadToFirebase: function(roadUID) {
-        // TODO;
-        console.log(roadUID);
+    saveRoadToFirebase: function(roadUID, roadName) {
+        return new Promise(function(resolve, reject) {
+            if (app.currentUser == null || app.loggedIn == false) {
+                ons.notification.toast("This feature is only available to users who are logged in.", { timeout: 2000 });
+                reject();
+            }
+            
+            var newRoad = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(roadUID);
+            
+            newRoad.set({
+                roadID: roadUID,
+                roadName: roadName
+            });
+            
+            resolve("Successfully saved road to database!");
+        });
     },
     
     userLogin: function() {
-        // TODO; (https://firebase.google.com/docs/auth/web/cordova)
         return new Promise(function(resolve, reject) {
             // Firebase authentication provider
             const authProvider = new firebase.auth.GoogleAuthProvider();
@@ -367,10 +395,6 @@ var app = {
             firebase.auth().signInWithRedirect(authProvider).then(function() {
               return firebase.auth().getRedirectResult();
             }).then(function(result) {
-              // This gives you a Google Access Token.
-              // You can use it to access the Google API.
-              var token = result.credential.accessToken;
-              // The signed-in user info.
               var user = result.user;
               // send the data to caller
               resolve(user);
@@ -380,6 +404,16 @@ var app = {
               var errorMessage = error.message;
             });
         }); 
+    },
+    
+    userLogout: function() {
+        return new Promise(function(resolve, reject) {
+            firebase.auth().signOut().then(function() {
+                resolve();
+            }).catch(function(error) {
+                reject();
+            });
+        });
     }
 };
 
