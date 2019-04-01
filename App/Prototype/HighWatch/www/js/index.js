@@ -104,7 +104,7 @@ var app = {
 
                       $("#trafficInfo").append($data);
                       
-                      if (!page.data.saved) {
+                      if (!page.data.saved && app.loggedIn) {
                           var $saveBtn = "<ons-button id='save-button' modifier='Material'>Save this Location!</ons-button>";
 
                           // Add the save button to the page.
