@@ -48,12 +48,12 @@
         "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-land-xxxhdpi/screen.png"
     },
     {
-        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_action_previous_item.png.flat",
-        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-mdpi/ic_action_previous_item.png"
-    },
-    {
         "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-port-ldpi_screen.png.flat",
         "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-port-ldpi/screen.png"
+    },
+    {
+        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_action_previous_item.png.flat",
+        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-mdpi/ic_action_previous_item.png"
     },
     {
         "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/mipmap-mdpi-v26_ic_launcher.png.flat",

@@ -5,7 +5,7 @@ var app = {
     // Application Constructor
     initialize: function() {
         
-        // Handle cases where user is not connected to the internet which is required for everything in this app.
+        // Handle cases where user is not connected to the internet which is required for everything in this app. (Uses Cordova-plugin-network-information)
         document.addEventListener('offline', function() {
             app.showOffline();
         }, false);

@@ -32,9 +32,6 @@
       "ANDROID_PATHPREFIX": "/",
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     },
-    "cordova-plugin-dialogs": {
-      "PACKAGE_NAME": "ca.sykesdev.highwatch"
-    },
     "cordova-plugin-network-information": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }

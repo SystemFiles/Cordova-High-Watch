@@ -45,10 +45,6 @@
               "count": 1
             },
             {
-              "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
-              "count": 1
-            },
-            {
               "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
               "count": 1
             }
@@ -121,9 +117,6 @@
       "ANDROID_SCHEME": " ",
       "ANDROID_HOST": " ",
       "ANDROID_PATHPREFIX": "/",
-      "PACKAGE_NAME": "ca.sykesdev.highwatch"
-    },
-    "cordova-plugin-dialogs": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     },
     "cordova-plugin-network-information": {
@@ -355,22 +348,6 @@
       ]
     },
     {
-      "id": "cordova-plugin-dialogs.notification",
-      "file": "plugins/cordova-plugin-dialogs/www/notification.js",
-      "pluginId": "cordova-plugin-dialogs",
-      "merges": [
-        "navigator.notification"
-      ]
-    },
-    {
-      "id": "cordova-plugin-dialogs.notification_android",
-      "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
-      "pluginId": "cordova-plugin-dialogs",
-      "merges": [
-        "navigator.notification"
-      ]
-    },
-    {
       "id": "cordova-plugin-network-information.network",
       "file": "plugins/cordova-plugin-network-information/www/network.js",
       "pluginId": "cordova-plugin-network-information",
@@ -399,7 +376,6 @@
     "cordova-plugin-browsertab": "0.2.0",
     "cordova-plugin-inappbrowser": "3.0.0",
     "cordova-plugin-customurlscheme": "4.4.0",
-    "cordova-plugin-dialogs": "2.0.1",
     "cordova-plugin-network-information": "2.0.1"
   }
 }

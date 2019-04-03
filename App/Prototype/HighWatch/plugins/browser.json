@@ -29,9 +29,6 @@
       "URL_SCHEME": "com.firebase.cordova",
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     },
-    "cordova-plugin-dialogs": {
-      "PACKAGE_NAME": "ca.sykesdev.highwatch"
-    },
     "cordova-plugin-network-information": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
