@@ -4,6 +4,16 @@ var app = {
     
     // Application Constructor
     initialize: function() {
+        
+        // Handle cases where user is not connected to the internet which is required for everything in this app. (Uses Cordova-plugin-network-information)
+        document.addEventListener('offline', function() {
+            app.showOffline();
+        }, false);
+        
+        document.addEventListener('online', function() {
+            app.hideOffline();
+        }, false);
+        
         // Event is after deviceready and library loaded...
         document.addEventListener('init', function(event) {
             // Handles page navigation (For different views)
@@ -444,10 +454,16 @@ var app = {
         });
     },
     
-    showToast: function(msg) {
-      ons.notification.toast(msg, {
-        timeout: 2000
-      });
+    showOffline: function() {
+        var modal = document.getElementById('offlineNotify');
+        
+        modal.show();
+    },
+    
+    hideOffline: function() {
+        var modal = document.getElementById('offlineNotify');
+        
+        modal.hide();
     }
 };
 
