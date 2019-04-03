@@ -35,7 +35,6 @@
     <plugin name="cordova-plugin-http" spec="^1.2.0" />
     <engine name="browser" spec="^5.0.4" />
     
-    
     <universal-links>
         <host name="highwatch.page.link/3Q85" scheme="https" />
         <host name="high-watch.firebaseapp.com" scheme="https">

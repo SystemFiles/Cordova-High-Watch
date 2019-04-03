@@ -383,11 +383,6 @@ var app = {
 
     saveRoadToFirebase: function(roadUID, roadName) {
         return new Promise(function(resolve, reject) {
-            if (app.currentUser == null || app.loggedIn == false) {
-                ons.notification.toast("This feature is only available to users who are logged in.", { timeout: 2000 });
-                reject();
-            }
-            
             var newRoad = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(roadUID);
             
             newRoad.set({
