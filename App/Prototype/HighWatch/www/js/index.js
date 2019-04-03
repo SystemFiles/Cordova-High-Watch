@@ -64,6 +64,7 @@ var app = {
                         data: {
                             id: $(this).text().split(']')[0].slice(1),
                             title: $(this).text().split(']')[1],
+                            saved: false
                         }
                     });
                 });
@@ -98,41 +99,54 @@ var app = {
                         + "Provided By: " + result.org + "<br/>"
                         + "Current Road Condition: " + result.condition + "<br/>"
                         + "Current Visibility: " + result.visibility + "<br/>"
-                        + "Presence of driving snow?: " + result.drifting + 
+                        + "Presence of drifting snow?: " + result.drifting + 
                           "</p>";
 
                       $("#trafficInfo").append($data);
                       
-                      var $saveBtn = "<ons-button id='save-button' modifier='Material'>Save this Location!</ons-button>";
-                      
-                      // Add the save button to the page.
-                      $("ons-card").first().after($saveBtn);
-                      
-                      // Save the current location
-                      $("#save-button").on('click', function() {
-                          app.saveRoadToFirebase(result.id, result.desc).then(function(success) {
-                              ons.notification.alert(success);
-                              
-                              $('#save-button').hide();
+                      if (!page.data.saved && app.loggedIn) {
+                          var $saveBtn = "<ons-button id='save-button' modifier='Material'>Save this Location!</ons-button>";
+
+                          // Add the save button to the page.
+                          $("ons-card").first().after($saveBtn);
+
+                          // Save the current location
+                          $("#save-button").on('click', function() {
+                              app.saveRoadToFirebase(result.id, result.desc).then(function(success) {
+                                  $('#save-button').hide();
+                              });
                           });
-                      });
-                      
+                      }
                   }).catch(function() {
                       ons.notification.alert("Error processing the data...Try again later!");
                   });
                   
               } else if (page.id === 'saved') {
-                  var list = ['HWY 403', 'Lincoln M. Alexander Pkwy.'];
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
                   
-                  // Build list of results
-                  var $listItems = "";
-                  var numItems = list.length;
-                  for (var i=0; i < numItems; i++) {
-                      $listItems += "<ons-list-item class='res-item' modifier='chevron' tappable>" + list[i] + "</ons-list-item>";
-                  }
-                  $("#saved-list").append($listItems);
-                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                  app.getRoadFromFirebase().then(function(list) {
+                      ons.notification.alert(list[0]);
+                      // Build list of results
+                      var $listItems = "";
+                      var numItems = list.length;
+                      for (var i=0; i < numItems; i++) {
+                          $listItems += "<ons-list-item class='saved-item' modifier='chevron' tappable>" + "[" + list[i].roadID + "] " + list[i].roadName + "</ons-list-item>";
+                      }
+                      $("#saved-list").append($listItems);
+                        
+                      // Setup event handlers (using event delegation)
+                      $("#saved-list").on('click', '.saved-item' , function() {
+                            navigator.pushPage('target.html', {
+                                data: {
+                                    id: $(this).text().split(']')[0].slice(1),
+                                    title: $(this).text().split(']')[1],
+                                    saved: true
+                                }
+                            });
+                      });
+                  }).catch(function(error) {
+                      ons.notification.alert(error);
+                  });
               } else if (page.id === 'alerts') {
                   // DO STUFF (GENERATE ALERTS LIST)
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
@@ -141,9 +155,7 @@ var app = {
     },
     
     decodePolyline: function(encoded) {
-
         // array that holds the points
-
         var points=[ ]
         var index = 0, len = encoded.length;
         var lat = 0, lng = 0;
@@ -371,11 +383,6 @@ var app = {
 
     saveRoadToFirebase: function(roadUID, roadName) {
         return new Promise(function(resolve, reject) {
-            if (app.currentUser == null || app.loggedIn == false) {
-                ons.notification.toast("This feature is only available to users who are logged in.", { timeout: 2000 });
-                reject();
-            }
-            
             var newRoad = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(roadUID);
             
             newRoad.set({
@@ -384,6 +391,27 @@ var app = {
             });
             
             resolve("Successfully saved road to database!");
+        });
+    },
+    
+    getRoadFromFirebase: function() {
+        return new Promise(function(resolve, reject) {
+            var savedList = [];
+            if (!app.loggedIn || app.currentUser == null) {
+                reject("Sorry, This feature is only available to users who are logged in.");
+            } else {
+                firebase.database().ref('users/' + app.currentUser.uid + '/saved/').once('value').then(function(dataSnap) {
+                    var data = dataSnap.val();
+                    if (dataSnap.exists()) {
+                        for (let key in data) {
+                            savedList.push(data[key]);
+                            
+                            // Send the list of saved road/cameras
+                            resolve(savedList);
+                        }
+                    }
+                });
+            }
         });
     },
     
@@ -414,6 +442,12 @@ var app = {
                 reject();
             });
         });
+    },
+    
+    showToast: function(msg) {
+      ons.notification.toast(msg, {
+        timeout: 2000
+      });
     }
 };
 
