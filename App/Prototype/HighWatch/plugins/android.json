@@ -12,6 +12,25 @@
     },
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-buildinfo": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-universal-links-plugin": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-browsertab": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-customurlscheme": {
+      "URL_SCHEME": "com.firebase.cordova",
+      "ANDROID_SCHEME": " ",
+      "ANDROID_HOST": " ",
+      "ANDROID_PATHPREFIX": "/",
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   },
   "dependent_plugins": {
@@ -19,6 +38,9 @@
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     },
     "cordova-support-android-plugin": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-compat": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   }

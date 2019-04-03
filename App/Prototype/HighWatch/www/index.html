@@ -6,6 +6,28 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" type="text/css" href="css/index.css">
         
+        <!-- Firebase App is always required and must be first -->
+        <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
+
+        <!-- Add additional services that you want to use -->
+        <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-database.js"></script>
+        
+        <!-- Firebase Configuration -->
+        <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
+        <script>
+          // Initialize Firebase
+          var config = {
+            apiKey: "AIzaSyCzrrGgpJ7Bj0TmikDn1q0xMqvA6DGGVt4",
+            authDomain: "high-watch.firebaseapp.com",
+            databaseURL: "https://high-watch.firebaseio.com",
+            projectId: "high-watch",
+            storageBucket: "high-watch.appspot.com",
+            messagingSenderId: "849772144764"
+          };
+          firebase.initializeApp(config);
+        </script>
+        
         <!-- Design Framework -->
         <link rel="stylesheet" type="text/css" href="lib/onsenui.min.css" />
         <link rel="stylesheet" type="text/css" href="lib/onsen-css-components.min.css" />
@@ -31,6 +53,11 @@
                     <div class="right">
                         <ons-toolbar-button id="alert-btn">
                             <span class="fas fa-exclamation-triangle"></span>
+                        </ons-toolbar-button>
+                    </div>
+                    <div class="left">
+                        <ons-toolbar-button id="login-btn">
+                            <span class="fas fa-user"></span>
                         </ons-toolbar-button>
                     </div>
                 </ons-toolbar>
