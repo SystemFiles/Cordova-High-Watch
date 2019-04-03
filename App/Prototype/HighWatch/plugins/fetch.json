@@ -72,5 +72,13 @@
     "variables": {
       "URL_SCHEME": "com.firebase.cordova"
     }
+  },
+  "cordova-plugin-network-information": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-network-information"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

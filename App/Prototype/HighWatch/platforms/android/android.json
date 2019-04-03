@@ -43,6 +43,10 @@
             {
               "xml": "<feature name=\"LaunchMyApp\"><param name=\"android-package\" value=\"nl.xservices.plugins.LaunchMyApp\" /></feature>",
               "count": 1
+            },
+            {
+              "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
+              "count": 1
             }
           ]
         }
@@ -52,6 +56,10 @@
           "/*": [
             {
               "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+              "count": 1
+            },
+            {
+              "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
               "count": 1
             }
           ],
@@ -109,6 +117,9 @@
       "ANDROID_SCHEME": " ",
       "ANDROID_HOST": " ",
       "ANDROID_PATHPREFIX": "/",
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-network-information": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   },
@@ -335,6 +346,23 @@
       "clobbers": [
         "window.plugins.launchmyapp"
       ]
+    },
+    {
+      "id": "cordova-plugin-network-information.network",
+      "file": "plugins/cordova-plugin-network-information/www/network.js",
+      "pluginId": "cordova-plugin-network-information",
+      "clobbers": [
+        "navigator.connection",
+        "navigator.network.connection"
+      ]
+    },
+    {
+      "id": "cordova-plugin-network-information.Connection",
+      "file": "plugins/cordova-plugin-network-information/www/Connection.js",
+      "pluginId": "cordova-plugin-network-information",
+      "clobbers": [
+        "Connection"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -347,6 +375,7 @@
     "cordova-plugin-compat": "1.2.0",
     "cordova-plugin-browsertab": "0.2.0",
     "cordova-plugin-inappbrowser": "3.0.0",
-    "cordova-plugin-customurlscheme": "4.4.0"
+    "cordova-plugin-customurlscheme": "4.4.0",
+    "cordova-plugin-network-information": "2.0.1"
   }
 }
