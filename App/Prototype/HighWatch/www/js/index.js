@@ -4,7 +4,6 @@ var app = {
     
     // Application Constructor
     initialize: function() {
-        
         // Handle cases where user is not connected to the internet which is required for everything in this app. (Uses Cordova-plugin-network-information)
         document.addEventListener('offline', function() {
             app.showOffline();
@@ -126,6 +125,23 @@ var app = {
                                   $('#save-button').hide();
                               });
                           });
+                      } else if (page.data.saved && app.loggedIn) {
+                          var $deleteBtn = "<ons-button id='del-button' modifier='Material'>Delete this Location</ons-button>";
+
+                          // Add the save button to the page.
+                          $("ons-card").first().after($deleteBtn);
+
+                          // Save the current location
+                          $("#del-button").on('click', function() {
+                              app.deleteRoadFromFirebase(result.id).then(function(success) {
+                                  $('#del-button').hide();
+                                  ons.notification.alert(success); // Show success message
+                                  
+                                  // Reset to saved results page
+                                  var nav = document.querySelector('#navigator');
+                                  nav.popPage();
+                              });
+                          });
                       }
                   }).catch(function() {
                       ons.notification.alert("Error processing the data...Try again later!");
@@ -156,6 +172,9 @@ var app = {
                       });
                   }).catch(function(error) {
                       ons.notification.alert(error);
+                      // Reset to saved results page
+                      var nav = document.querySelector('#navigator');
+                      nav.popPage();
                   });
               } else if (page.id === 'alerts') {
                   // DO STUFF (GENERATE ALERTS LIST)
@@ -401,6 +420,16 @@ var app = {
             });
             
             resolve("Successfully saved road to database!");
+        });
+    },
+    
+    deleteRoadFromFirebase: function(id) {
+        return new Promise(function(resolve, reject) {
+            var road = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(id);
+            
+            road.remove();
+            
+            resolve("Successfully removed road from saved data!");
         });
     },
     
