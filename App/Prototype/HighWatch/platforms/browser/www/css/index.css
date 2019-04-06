@@ -123,6 +123,14 @@ label {
     margin-bottom: 20px;
 }
 
+#del-button {
+    width: 95%;
+    margin-left: 2.5%;
+    text-align: center;
+    padding: 5px 20px;
+    margin-bottom: 20px;
+}
+
 #alert-btn span {
     color: #ff6c00;
     font-size: 20px;

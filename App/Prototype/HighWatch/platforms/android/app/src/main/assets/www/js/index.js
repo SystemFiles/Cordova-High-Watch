@@ -4,7 +4,6 @@ var app = {
     
     // Application Constructor
     initialize: function() {
-        
         // Handle cases where user is not connected to the internet which is required for everything in this app. (Uses Cordova-plugin-network-information)
         document.addEventListener('offline', function() {
             app.showOffline();
@@ -34,7 +33,7 @@ var app = {
                 });
                 
                 page.querySelector("#alert-btn").addEventListener('click', function() {
-                    navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}})
+                    navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}});
                 });
                 
                 page.querySelector('#login-btn').addEventListener('click', function() {
@@ -122,8 +121,25 @@ var app = {
 
                           // Save the current location
                           $("#save-button").on('click', function() {
-                              app.saveRoadToFirebase(result.id, result.desc).then(function(success) {
+                              app.saveRoadToFirebase(result.id, result.desc, result.lat, result.long).then(function(success) {
                                   $('#save-button').hide();
+                              });
+                          });
+                      } else if (page.data.saved && app.loggedIn) {
+                          var $deleteBtn = "<ons-button id='del-button' modifier='Material'>Delete this Location</ons-button>";
+
+                          // Add the save button to the page.
+                          $("ons-card").first().after($deleteBtn);
+
+                          // Save the current location
+                          $("#del-button").on('click', function() {
+                              app.deleteRoadFromFirebase(result.id).then(function(success) {
+                                  $('#del-button').hide();
+                                  ons.notification.alert(success); // Show success message
+                                  
+                                  // Reset to saved results page
+                                  var nav = document.querySelector('#navigator');
+                                  nav.popPage();
                               });
                           });
                       }
@@ -135,7 +151,6 @@ var app = {
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
                   
                   app.getRoadFromFirebase().then(function(list) {
-                      ons.notification.alert(list[0]);
                       // Build list of results
                       var $listItems = "";
                       var numItems = list.length;
@@ -156,10 +171,19 @@ var app = {
                       });
                   }).catch(function(error) {
                       ons.notification.alert(error);
+                      // Reset to saved results page
+                      var nav = document.querySelector('#navigator');
+                      nav.popPage();
                   });
               } else if (page.id === 'alerts') {
-                  // DO STUFF (GENERATE ALERTS LIST)
+                  // TODO STUFF (GENERATE ALERTS LIST)
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                  
+                  if (app.loggedIn) {
+                      app.displayAlerts();
+                  } else {
+                      ons.notification.alert("Sorry, This feature is only available to users who are logged in.");
+                  }
               }
         });
     },
@@ -197,8 +221,7 @@ var app = {
         return points
     },
 
-    inRange: function(x, y) {
-        const allowable = 0.02;
+    inRange: function(x, y, allowable) {
         var sum = Math.abs(x - y);
         var allowed = ((allowable * -1 <= sum) && (sum <= allowable));
         return allowed;
@@ -211,8 +234,8 @@ var app = {
             // Perform search
             for (var i=0; i < length; i++) {
                 if (
-                    app.inRange(decodedPoly[i].latitude, comparison.latitude) == true &&
-                    app.inRange(decodedPoly[i].longitude, comparison.longitude) == true
+                    app.inRange(decodedPoly[i].latitude, comparison.latitude, 0.02) == true &&
+                    app.inRange(decodedPoly[i].longitude, comparison.longitude, 0.02) == true
                 ) {
                     resolve({res: true, road: roadCompare});
                 }
@@ -253,6 +276,19 @@ var app = {
                 resolve(result);
             }).catch(function(msg) {
                 ons.notification.alert(msg);
+            });
+        });
+    },
+    
+    getEventsJSON: function() {
+        return new Promise(function(resolve, reject) {
+            var conditionURL = "https://511on.ca/api/v2/get/event?format=json";
+            app.sendRequest(conditionURL).then(function(result) {
+                console.log(result);
+                resolve(result);
+            }).catch(function(msg) {
+                ons.notification.alert(msg);
+                reject();
             });
         });
     },
@@ -349,7 +385,6 @@ var app = {
                 // Do search for auxillary information about road conditions
                 app.getRoadConditionsJSON().then(function(resultJSON) {
                     app.findMatchingRoadConditions(resultJSON, currentCam[0].Latitude, currentCam[0].Longitude).then(function(conditions) {
-                        console.log(conditions);
                         resolve(
                             {
                                 id: currentCam[0].Id,
@@ -391,16 +426,26 @@ var app = {
         });
     },
 
-    saveRoadToFirebase: function(roadUID, roadName) {
+    saveRoadToFirebase: function(roadUID, roadName, latitude, longitude) {
         return new Promise(function(resolve, reject) {
             var newRoad = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(roadUID);
             
             newRoad.set({
                 roadID: roadUID,
-                roadName: roadName
+                roadName: roadName,
+                longitude: longitude,
+                latitude: latitude
             });
             
             resolve("Successfully saved road to database!");
+        });
+    },
+    
+    deleteRoadFromFirebase: function(id) {
+        return new Promise(function(resolve, reject) {
+            var road = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(id);
+            road.remove();
+            resolve("Successfully removed road from saved data!");
         });
     },
     
@@ -456,14 +501,76 @@ var app = {
     
     showOffline: function() {
         var modal = document.getElementById('offlineNotify');
-        
         modal.show();
     },
     
     hideOffline: function() {
         var modal = document.getElementById('offlineNotify');
-        
         modal.hide();
+    },
+    
+    displayAlerts: function() {
+        var $alertsList = $('#alert-list');
+        var $listItems = "";
+        
+        app.fetchAlerts().then(function(alerts) {
+            var cacheLen = alerts.length;
+            var timezone = "America/Toronto";
+            for (var i=0; i < cacheLen; i++) {
+                var alert = alerts[i];
+                
+                $listItems += "<ons-list-item expandable><span class='fas fa-exclamation-triangle'></span> "
+                    + alert.RoadwayName + "<div class='expandable-content'>"
+                    + "Type of Alert: " + alert.EventType + "<br/>------------------<br/>"
+                    + "Description: " + alert.Description + "<br/>------------------<br/>"
+                    + "Direction Of Travel: " + alert.DirectionOfTravel + "<br/>------------------<br/>"
+                    + "Lanes Affected: " + alert.LanesAffected + "<br/>------------------<br/>"
+                    + "Event Reported: " + new Date(alert.Reported * 1000).toLocaleString("en-US", {timeZone: timezone}) + "<br/>------------------<br/>"
+                    + "Started: " + new Date(alert.StartDate * 1000).toLocaleString("en-US", {timeZone: timezone}) + "<br/>------------------<br/>"
+                    + "Planned End Date: " + new Date(alert.PlannedEndDate * 1000).toLocaleString("en-US", {timeZone: timezone}) + "<br/>------------------<br/>"
+                    + "Information Last Updated: " + new Date(alert.LastUpdated * 1000).toLocaleString("en-US", {timeZone: timezone}) + "<br/>------------------<br/>"
+                    + "</div></ons-list-item>"
+            }
+            
+            $alertsList.append($listItems);
+            
+//            console.log("Alerts List:");
+//            console.log(alerts);
+        }).catch(function(error) {
+            console.log(error);
+        });
+    },
+    
+    fetchAlerts: function() {
+        return new Promise(function(resolve, reject) {
+            app.getRoadFromFirebase().then(function(savedList) {
+                app.getEventsJSON().then(function(eventsJSON) {
+                    var eventsInSaved = [];
+                    var numEvents = eventsJSON.length;
+                    var numSaved = savedList.length;
+                    
+                    // Search each saved road for events
+                    for (var j=0; j < numSaved; j++) {
+                        var roadComp = savedList[j];
+                        for (var i=0; i < numEvents; i++) {
+                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.1) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.1) == true));
+                            
+                            // Filter out each matched road to alert
+                            if (isInRange) {
+                                eventsInSaved.push(eventsJSON[i]);
+                            }
+                        }
+                    }
+                    
+                    // Return all the alerts/events
+                    resolve(eventsInSaved);
+                }).catch(function() {
+                    reject("Error getting events JSON from API..");
+                });
+            }).catch(function() {
+                reject("Error retrieving saved data from user account.");
+            });
+        });
     }
 };
 
