@@ -12,6 +12,7 @@
     "dependencies": {
         "cordova-android": "^8.0.0",
         "cordova-browser": "^5.0.4",
+        "cordova-ios": "^5.0.0",
         "cordova-plugin-browsertab": "0.2.0",
         "cordova-plugin-buildinfo": "2.0.2",
         "cordova-plugin-compat": "1.2.0",
@@ -33,16 +34,14 @@
             "cordova-plugin-browsertab": {},
             "cordova-plugin-inappbrowser": {},
             "cordova-plugin-customurlscheme": {
-                "URL_SCHEME": "com.firebase.cordova",
-                "ANDROID_SCHEME": " ",
-                "ANDROID_HOST": " ",
-                "ANDROID_PATHPREFIX": "/"
+                "URL_SCHEME": "ca.sykesdev.highwatch"
             },
             "cordova-plugin-network-information": {}
         },
         "platforms": [
             "browser",
-            "android"
+            "android",
+            "ios"
         ]
     }
 }
