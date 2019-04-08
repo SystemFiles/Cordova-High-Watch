@@ -34,7 +34,7 @@
   "cordova-universal-links-plugin": {
     "source": {
       "type": "registry",
-      "id": "cordova-universal-links-plugin-fix"
+      "id": "cordova-universal-links-plugin-fix@1.2.1"
     },
     "is_top_level": true,
     "variables": {}
@@ -66,17 +66,25 @@
   "cordova-plugin-customurlscheme": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-customurlscheme"
+      "id": "cordova-plugin-customurlscheme@4.4.0"
     },
     "is_top_level": true,
     "variables": {
-      "URL_SCHEME": "com.firebase.cordova"
+      "URL_SCHEME": "ca.sykesdev.highwatch"
     }
   },
   "cordova-plugin-network-information": {
     "source": {
       "type": "registry",
       "id": "cordova-plugin-network-information"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-device": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-device"
     },
     "is_top_level": true,
     "variables": {}

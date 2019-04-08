@@ -47,32 +47,50 @@ var app = {
                 page.querySelector('#login-btn').addEventListener('click', function() {
                     // Handle accounts login/logout...
                     var $signedInOutToast = $('#signedInOutToast');
-                    
-                    if (!app.loggedIn) {
-                        app.userLogin().then(function(result) {
-                            app.loggedIn = true;
-                            app.currentUser = result;
-                            
-                            // Show message for logged in
-                            ons.notification.alert("Thank you for signing in " + app.currentUser.DisplayName + "!");
-                            
-                            // Change icon to log out icon
-                            $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
-                        });
+                    if (device.platform === "iOS") {
+                        // If iOS since google auth does not work due to a security issue in iOS with google, we will use manual sign-in method.
+                        if (!app.loggedIn) {
+                            // Log in
+                            navigator.pushPage('loginPage.html', {data: {title: 'Login/Register'}});
+                        } else {
+                            // Log out
+                            firebase.auth().signOut().then(function() {
+                                ons.notification.alert("Successfully signed out!");
+                                
+                                // Reset app variables
+                                app.loggedIn = false;
+                                app.currentUser = null;
+                                
+                                // Reset login icon
+                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
+                            }).catch(function(error) {
+                                ons.notification.alert(error);
+                            });
+                        }
                     } else {
-                        app.userLogout().then(function() {
-                            app.loggedIn = false;
-                            app.currentUser = null;
-                            
-                            
-                            // Show message for logged out
-                            ons.notification.alert("Successfully signed out!");
-                            
-                            // Change the icon back to login button icon
-                            $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
-                        }).catch(function() {
-                            ons.notification.alert("Error attempting to sign out..");
-                        });
+                        // If Android OS then login with Google Auth
+                        if (!app.loggedIn) {
+                            app.userLogin().then(function(result) {
+                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
+
+                                app.loggedIn = true;
+                                app.currentUser = result;
+
+                                ons.notification.alert("Thanks for signing in " +
+                                                      app.currentUser.displayName + "!");
+                            });
+                        } else {
+                            app.userLogout().then(function() {
+                                app.loggedIn = false;
+                                app.currentUser = null;
+                                ons.notification.alert("Signed out successfully!");
+
+                                // Change the icon back to login button icon
+                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
+                            }).catch(function() {
+                                ons.notification.alert("Error attempting to sign out..");
+                            });
+                        }
                     }
                 });
 
@@ -190,7 +208,94 @@ var app = {
                   });
               } else if (page.id === 'alerts') {
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-                  app.displayAlerts();
+                  if (app.loggedIn) {
+                      app.displayAlerts();
+                  } else {
+                      ons.notification.alert("Sorry, This feature is only available to users who are logged in.");
+                  }
+              } else if (page.id === 'loginPage') {
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                  
+                  // Do login handling stuff here.
+                  page.querySelector('#emailLogin-btn').addEventListener('click', function() {
+                      var email = document.getElementById('username').value;
+                      var password = document.getElementById('password').value;
+                      
+                      firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
+                          // Set application variables
+                          app.loggedIn = true;
+                          app.currentUser = {
+                              uid: user.user.uid,
+                              DisplayName: email.split('@')[0]
+                          };
+
+                          ons.notification.alert("Successfully logged in!");
+
+                          // Replace login icon
+                          $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
+                          
+                          // Pop page off stack
+                          navigator.popPage();
+                      }).catch(function(error) {
+                          // Handle Errors here.
+                          var errorCode = error.code;
+                          var errorMessage = error.message;
+                          
+                          // Show error message in bootstrap alert
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.text(errorCode + " > " + errorMessage);
+                          $errorAlert.show(200);
+                          
+                          return;
+                      });
+                  });
+                  
+                  page.querySelector('#emailRegister-btn').addEventListener('click', function() {
+                      var email = document.getElementById('username').value;
+                      var password = document.getElementById('password').value;
+                      
+                      firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user) {
+                          // Show account created
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.removeClass('alert-danger');
+                          $errorAlert.addClass('alert-success');
+                          $errorAlert.text("Thanks for creating an account! Click sign in to begin using some cool features!");
+                          $errorAlert.show(200);
+                      }).catch(function(error) {
+                          var errorCode = error.code;
+                          var errorMessage = error.message;
+                          
+                          // Show error message in bootstrap alert
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.removeClass('alert-success');
+                          $errorAlert.addClass('alert-danger');
+                          $errorAlert.text(errorCode + " > " + errorMessage);
+                          $errorAlert.show(200);
+                          
+                          return;
+                      });
+                  });
+                  
+                  page.querySelector('#forgotPass-btn').addEventListener('click', function() {
+                      var email = document.getElementById('username').value;
+                      
+                      firebase.auth().sendPasswordResetEmail(email).then(function() {
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.removeClass('alert-danger');
+                          $errorAlert.addClass('alert-success');
+                          $errorAlert.text("We sent you a password reset email! You should see it shortly...");
+                          $errorAlert.show(200);
+                      }).catch(function(error) {
+                          var errorCode = error.code;
+                          var errorMessage = error.message;
+                          
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.removeClass('alert-success');
+                          $errorAlert.addClass('alert-danger');
+                          $errorAlert.text(errorCode + " > " + errorMessage);
+                          $errorAlert.show(200);
+                      });
+                  });
               }
         });
     },
@@ -291,7 +396,6 @@ var app = {
         return new Promise(function(resolve, reject) {
             var conditionURL = "https://511on.ca/api/v2/get/event?format=json";
             app.sendRequest(conditionURL).then(function(result) {
-                console.log(result);
                 resolve(result);
             }).catch(function(msg) {
                 ons.notification.alert(msg);
