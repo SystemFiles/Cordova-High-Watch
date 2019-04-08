@@ -146,4 +146,21 @@ ons-button {
 }
 
 
+#emailLogin-btn {
+    width: 100%;
+    text-align: center;
+    padding: 5px 20px;
+    border-radius: 0;
+    margin-bottom: 5px;
+}
+
+#emailRegister-btn {
+    width: 100%;
+    text-align: center;
+    background-color: #00cec9;
+    color: #333;
+    padding: 5px 20px;
+    border-radius: 0;
+    margin-bottom: 0;
+}
 

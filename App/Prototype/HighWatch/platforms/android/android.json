@@ -47,6 +47,10 @@
             {
               "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
               "count": 1
+            },
+            {
+              "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
+              "count": 1
             }
           ]
         }
@@ -120,6 +124,9 @@
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     },
     "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-device": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   },
@@ -363,6 +370,14 @@
       "clobbers": [
         "Connection"
       ]
+    },
+    {
+      "id": "cordova-plugin-device.device",
+      "file": "plugins/cordova-plugin-device/www/device.js",
+      "pluginId": "cordova-plugin-device",
+      "clobbers": [
+        "device"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -376,6 +391,7 @@
     "cordova-plugin-browsertab": "0.2.0",
     "cordova-plugin-inappbrowser": "3.0.0",
     "cordova-plugin-customurlscheme": "4.4.0",
-    "cordova-plugin-network-information": "2.0.1"
+    "cordova-plugin-network-information": "2.0.1",
+    "cordova-plugin-device": "2.0.2"
   }
 }

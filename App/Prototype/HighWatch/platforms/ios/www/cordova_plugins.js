@@ -238,6 +238,14 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "clobbers": [
         "universalLinks"
       ]
+    },
+    {
+      "id": "cordova-plugin-device.device",
+      "file": "plugins/cordova-plugin-device/www/device.js",
+      "pluginId": "cordova-plugin-device",
+      "clobbers": [
+        "device"
+      ]
     }
   ];
   module.exports.metadata = {
@@ -251,6 +259,7 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cordova-plugin-network-information": "2.0.1",
     "cordova-plugin-whitelist": "1.3.3",
     "cordova-support-android-plugin": "1.0.1",
-    "cordova-universal-links-plugin": "1.2.1"
+    "cordova-universal-links-plugin": "1.2.1",
+    "cordova-plugin-device": "2.0.2"
   };
 });

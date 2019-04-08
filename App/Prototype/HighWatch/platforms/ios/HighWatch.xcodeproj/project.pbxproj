@@ -44,6 +44,7 @@
 		B83318EC215E43E4B0D7D5E5 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DFC1ACEAC26A46219D0FE021 /* AFURLSessionManager.m */; };
 		D4CB0A9E0B644BB4A1C614C3 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66CE5CB76AB4EAFBE45E72D /* SafariServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F5933271F7854D4C9C7C3860 /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB56FA3B1524D02A6068FF5 /* CDVLocalFilesystem.m */; };
+		7D8E94A3D9FE48F5B7CEF691 /* CDVDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = E752AF91CDE54141AD92A07A /* CDVDevice.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -149,6 +150,8 @@
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = HighWatch/config.xml; sourceTree = "<group>"; };
 		F8852611C84649E3BB8CFD12 /* HighWatch.entitlements */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; path = HighWatch.entitlements; sourceTree = "<group>"; };
 		FC31DABE19284FF5BB84FCF2 /* Security.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		E752AF91CDE54141AD92A07A /* CDVDevice.m */ = {isa = PBXFileReference; name = "CDVDevice.m"; path = "cordova-plugin-device/CDVDevice.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		5D550B4CD21E43C885277699 /* CDVDevice.h */ = {isa = PBXFileReference; name = "CDVDevice.h"; path = "cordova-plugin-device/CDVDevice.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -315,6 +318,8 @@
 				C76A1CDC116042848E84EBA3 /* CULConfigXmlParser.h */,
 				58555F95AF0E43F2BA2AE726 /* CULConfigJsonParser.h */,
 				AD7358044F544058B8AF5CE3 /* NSBundle+CULPlugin.h */,
+				E752AF91CDE54141AD92A07A /* CDVDevice.m */,
+				5D550B4CD21E43C885277699 /* CDVDevice.h */,
 			);
 			name = Plugins;
 			path = HighWatch/Plugins;
@@ -470,6 +475,7 @@
 				11C3497B02424CF481D3F491 /* CULConfigXmlParser.m in Sources */,
 				3CB77480EB5F452EBC89CAA1 /* CULConfigJsonParser.m in Sources */,
 				67D9C17FE818494F936FEE4B /* NSBundle+CULPlugin.m in Sources */,
+				7D8E94A3D9FE48F5B7CEF691 /* CDVDevice.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
