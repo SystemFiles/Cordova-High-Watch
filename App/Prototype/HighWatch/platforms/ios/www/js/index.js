@@ -29,16 +29,24 @@ var app = {
                 });
 
                 page.querySelector("#showSaved").addEventListener('click', function() {
-                    navigator.pushPage('saved.html', {data: {title: 'Saved'}});
+                    if (app.loggedIn) {
+                        navigator.pushPage('saved.html', {data: {title: 'Saved'}});
+                    } else {
+                        ons.notification.alert("Sorry, This feature is only available to users who are logged in.");
+                    }
                 });
                 
                 page.querySelector("#alert-btn").addEventListener('click', function() {
-                    navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}});
+                    if (app.loggedIn) {
+                        navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}});
+                    } else {
+                        ons.notification.alert("Sorry, This feature is only available to users who are logged in.");
+                    }
                 });
                 
                 page.querySelector('#login-btn').addEventListener('click', function() {
-                    // Store the current user data after logging in..
-                    
+                    // Handle accounts login/logout...
+                    var $signedInOutToast = $('#signedInOutToast');
                     if (device.platform === "iOS") {
                         // If iOS since google auth does not work due to a security issue in iOS with google, we will use manual sign-in method.
                         if (!app.loggedIn) {
@@ -101,7 +109,7 @@ var app = {
                     });
                 });
 
-                // Prohibit blank searches (This will return the entire JSON response for everything in 511on DB
+                // Prohibit blank searches
                 if (page.data.searchTerm.length == 0) {
                     ons.notification.alert("Cannot find anything with that search term...");
                     return;
@@ -200,7 +208,6 @@ var app = {
                   });
               } else if (page.id === 'alerts') {
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-                  
                   if (app.loggedIn) {
                       app.displayAlerts();
                   } else {
@@ -556,21 +563,16 @@ var app = {
     getRoadFromFirebase: function() {
         return new Promise(function(resolve, reject) {
             var savedList = [];
-            if (!app.loggedIn || app.currentUser == null) {
-                reject("Sorry, This feature is only available to users who are logged in.");
-            } else {
-                firebase.database().ref('users/' + app.currentUser.uid + '/saved/').once('value').then(function(dataSnap) {
-                    var data = dataSnap.val();
-                    if (dataSnap.exists()) {
-                        for (let key in data) {
-                            savedList.push(data[key]);
-                            
-                            // Send the list of saved road/cameras
-                            resolve(savedList);
-                        }
+            firebase.database().ref('users/' + app.currentUser.uid + '/saved/').once('value').then(function(dataSnap) {
+                var data = dataSnap.val();
+                if (dataSnap.exists()) {
+                    for (let key in data) {
+                        savedList.push(data[key]);                            
+                        // Send the list of saved road/cameras
+                        resolve(savedList);
                     }
-                });
-            }
+                }
+            });
         });
     },
     
@@ -637,9 +639,6 @@ var app = {
             }
             
             $alertsList.append($listItems);
-            
-//            console.log("Alerts List:");
-//            console.log(alerts);
         }).catch(function(error) {
             console.log(error);
         });
