@@ -13,6 +13,13 @@ var app = {
             app.hideOffline();
         }, false);
         
+        document.addEventListener('deviceready', function() {
+            // Hide login buttons that don't apply to ios
+            if (device.platform === 'iOS') {
+                $('#google-login-btn').hide();
+            }
+        });
+        
         // Event is after deviceready and library loaded...
         document.addEventListener('init', function(event) {
             // Handles page navigation (For different views)
@@ -29,38 +36,76 @@ var app = {
                 });
 
                 page.querySelector("#showSaved").addEventListener('click', function() {
-                    navigator.pushPage('saved.html', {data: {title: 'Saved'}});
+                    if (app.loggedIn) {
+                        navigator.pushPage('saved.html', {data: {title: 'Saved'}});
+                    } else {
+                        ons.notification.alert("Sorry, This feature is only available to users who are logged in.");
+                    }
                 });
                 
                 page.querySelector("#alert-btn").addEventListener('click', function() {
-                    navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}});
+                    if (app.loggedIn) {
+                        navigator.pushPage('alerts.html', {data: {title: 'Alerts / Notifications'}});
+                    } else {
+                        ons.notification.alert("Sorry, This feature is only available to users who are logged in.");
+                    }
                 });
                 
                 page.querySelector('#login-btn').addEventListener('click', function() {
-                    // Store the current user data after logging in..
-                    
+                    // Handle accounts login/logout...
                     if (!app.loggedIn) {
-                        app.userLogin().then(function(result) {
-                            $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
-
-                            app.loggedIn = true;
-                            app.currentUser = result;
-                            
-                            ons.notification.alert("Thanks for signing in " +
-                                                  app.currentUser.displayName + "!");
-                        });
+                        // Log in
+                        navigator.pushPage('loginPage.html', {data: {title: 'Login/Register'}});
                     } else {
-                        app.userLogout().then(function() {
+                        // Log out
+                        firebase.auth().signOut().then(function() {
+                            ons.notification.alert("Successfully signed out!");
+                                
+                            // Reset app variables
                             app.loggedIn = false;
                             app.currentUser = null;
-                            ons.notification.alert("Signed out successfully!");
-                            
-                            // Change the icon back to login button icon
+                                
+                            // Reset login icon
                             $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
-                        }).catch(function() {
-                            ons.notification.alert("Error attempting to sign out..");
+                            
+                            // Re-show google login button (ONLY ON ANDROID)
+                            if (device.platform === 'Android') {
+                                $('#google-login-btn').show();
+                            }
+                        }).catch(function(error) {
+                            ons.notification.alert(error);
                         });
                     }
+                });
+                
+                page.querySelector('#google-login-btn').addEventListener('click', function() {
+                    if (!app.loggedIn) {
+                            app.userLogin().then(function(result) {
+                                $('#google-login-btn').find('ons-icon').replaceWith("<span class='fas fa-sign-out-alt'></span>");
+                                
+                                app.loggedIn = true;
+                                app.currentUser = result;
+
+                                ons.notification.alert("Thanks for signing in " +
+                                                      app.currentUser.displayName + "!");
+                                
+                                // Hide custom email login
+                                $('#login-btn').hide();
+                            });
+                        } else {
+                            app.userLogout().then(function() {
+                                app.loggedIn = false;
+                                app.currentUser = null;
+                                ons.notification.alert("Signed out successfully!");
+                                
+                                $('#google-login-btn').find('span').replaceWith("<ons-icon icon='md-google'></ons-icon>");
+                                
+                                // Re-show custom login button
+                                $('#login-btn').show();
+                            }).catch(function() {
+                                ons.notification.alert("Error attempting to sign out..");
+                            });
+                        }
                 });
 
             } else if (page.id === 'results') {
@@ -78,7 +123,7 @@ var app = {
                     });
                 });
 
-                // Prohibit blank searches (This will return the entire JSON response for everything in 511on DB
+                // Prohibit blank searches
                 if (page.data.searchTerm.length == 0) {
                     ons.notification.alert("Cannot find anything with that search term...");
                     return;
@@ -176,14 +221,98 @@ var app = {
                       nav.popPage();
                   });
               } else if (page.id === 'alerts') {
-                  // TODO STUFF (GENERATE ALERTS LIST)
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
-                  
                   if (app.loggedIn) {
                       app.displayAlerts();
                   } else {
                       ons.notification.alert("Sorry, This feature is only available to users who are logged in.");
                   }
+              } else if (page.id === 'loginPage') {
+                  page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                  
+                  // Do login handling stuff here.
+                  page.querySelector('#emailLogin-btn').addEventListener('click', function() {
+                      var email = document.getElementById('username').value;
+                      var password = document.getElementById('password').value;
+                      
+                      firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
+                          // Set application variables
+                          app.loggedIn = true;
+                          app.currentUser = {
+                              uid: user.user.uid,
+                              DisplayName: email.split('@')[0]
+                          };
+
+                          ons.notification.alert("Successfully logged in!");
+                          
+                          // Hide google login btn while using custom email login
+                          $('#google-login-btn').hide();
+
+                          // Replace login icon
+                          $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
+                          
+                          // Pop page off stack
+                          navigator.popPage();
+                      }).catch(function(error) {
+                          // Handle Errors here.
+                          var errorCode = error.code;
+                          var errorMessage = error.message;
+                          
+                          // Show error message in bootstrap alert
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.text(errorCode + " > " + errorMessage);
+                          $errorAlert.show(200);
+                          
+                          return;
+                      });
+                  });
+                  
+                  page.querySelector('#emailRegister-btn').addEventListener('click', function() {
+                      var email = document.getElementById('username').value;
+                      var password = document.getElementById('password').value;
+                      
+                      firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user) {
+                          // Show account created
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.removeClass('alert-danger');
+                          $errorAlert.addClass('alert-success');
+                          $errorAlert.text("Thanks for creating an account! Click sign in to begin using some cool features!");
+                          $errorAlert.show(200);
+                      }).catch(function(error) {
+                          var errorCode = error.code;
+                          var errorMessage = error.message;
+                          
+                          // Show error message in bootstrap alert
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.removeClass('alert-success');
+                          $errorAlert.addClass('alert-danger');
+                          $errorAlert.text(errorCode + " > " + errorMessage);
+                          $errorAlert.show(200);
+                          
+                          return;
+                      });
+                  });
+                  
+                  page.querySelector('#forgotPass-btn').addEventListener('click', function() {
+                      var email = document.getElementById('username').value;
+                      
+                      firebase.auth().sendPasswordResetEmail(email).then(function() {
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.removeClass('alert-danger');
+                          $errorAlert.addClass('alert-success');
+                          $errorAlert.text("We sent you a password reset email! You should see it shortly...");
+                          $errorAlert.show(200);
+                      }).catch(function(error) {
+                          var errorCode = error.code;
+                          var errorMessage = error.message;
+                          
+                          var $errorAlert = $('#error-login-alert');
+                          $errorAlert.removeClass('alert-success');
+                          $errorAlert.addClass('alert-danger');
+                          $errorAlert.text(errorCode + " > " + errorMessage);
+                          $errorAlert.show(200);
+                      });
+                  });
               }
         });
     },
@@ -284,7 +413,6 @@ var app = {
         return new Promise(function(resolve, reject) {
             var conditionURL = "https://511on.ca/api/v2/get/event?format=json";
             app.sendRequest(conditionURL).then(function(result) {
-                console.log(result);
                 resolve(result);
             }).catch(function(msg) {
                 ons.notification.alert(msg);
@@ -452,21 +580,16 @@ var app = {
     getRoadFromFirebase: function() {
         return new Promise(function(resolve, reject) {
             var savedList = [];
-            if (!app.loggedIn || app.currentUser == null) {
-                reject("Sorry, This feature is only available to users who are logged in.");
-            } else {
-                firebase.database().ref('users/' + app.currentUser.uid + '/saved/').once('value').then(function(dataSnap) {
-                    var data = dataSnap.val();
-                    if (dataSnap.exists()) {
-                        for (let key in data) {
-                            savedList.push(data[key]);
-                            
-                            // Send the list of saved road/cameras
-                            resolve(savedList);
-                        }
+            firebase.database().ref('users/' + app.currentUser.uid + '/saved/').once('value').then(function(dataSnap) {
+                var data = dataSnap.val();
+                if (dataSnap.exists()) {
+                    for (let key in data) {
+                        savedList.push(data[key]);                            
+                        // Send the list of saved road/cameras
+                        resolve(savedList);
                     }
-                });
-            }
+                }
+            });
         });
     },
     
@@ -533,9 +656,6 @@ var app = {
             }
             
             $alertsList.append($listItems);
-            
-//            console.log("Alerts List:");
-//            console.log(alerts);
         }).catch(function(error) {
             console.log(error);
         });
@@ -553,7 +673,7 @@ var app = {
                     for (var j=0; j < numSaved; j++) {
                         var roadComp = savedList[j];
                         for (var i=0; i < numEvents; i++) {
-                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.1) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.1) == true));
+                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.02) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.02) == true));
                             
                             // Filter out each matched road to alert
                             if (isInRange) {

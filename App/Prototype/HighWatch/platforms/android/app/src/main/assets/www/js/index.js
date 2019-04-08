@@ -68,8 +68,10 @@ var app = {
                             // Reset login icon
                             $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
                             
-                            // Re-show google login button
-                            $('#google-login-btn').show();
+                            // Re-show google login button (ONLY ON ANDROID)
+                            if (device.platform === 'Android') {
+                                $('#google-login-btn').show();
+                            }
                         }).catch(function(error) {
                             ons.notification.alert(error);
                         });
