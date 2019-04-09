@@ -293,9 +293,6 @@ var app = {
                       });
                   });
                   
-                  // TODO: Setup login fix for virtual keyboard
-                  
-                  
                   page.querySelector('#forgotPass-btn').addEventListener('click', function() {
                       var email = document.getElementById('username').value;
                       

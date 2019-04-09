@@ -37,9 +37,6 @@
     },
     "cordova-plugin-device": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
-    },
-    "cordova-plugin-keyboard": {
-      "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   },
   "dependent_plugins": {

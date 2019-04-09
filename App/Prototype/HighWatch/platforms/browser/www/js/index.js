@@ -230,15 +230,6 @@ var app = {
               } else if (page.id === 'loginPage') {
                   page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
                   
-                  // Setup login fix for virtual keyboard
-                  $('#login-form').find('p').on('focus', '.login-input', function() {
-                      $('#login-btn-group').hide();
-                  });
-                  
-                  $('#login-form').find('p').on('blur', '.login-input', function() {
-                      $('#login-btn-group').show();
-                  });
-                  
                   // Do login handling stuff here.
                   page.querySelector('#emailLogin-btn').addEventListener('click', function() {
                       var email = document.getElementById('username').value;

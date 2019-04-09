@@ -34,9 +34,6 @@
     <feature name="Device">
         <param name="android-package" value="org.apache.cordova.device.Device" />
     </feature>
-    <feature name="Keyboard">
-        <param name="android-package" onload="true" value="org.apache.cordova.labs.keyboard.Keyboard" />
-    </feature>
     <name>HighWatch</name>
     <description>
         Highwatch traffic monitoring application for Android/IOS/Browsers.

@@ -45,9 +45,6 @@
     <feature name="Device">
         <param name="ios-package" value="CDVDevice" />
     </feature>
-    <feature name="Keyboard">
-        <param name="ios-package" onload="true" value="CDVKeyboard" />
-    </feature>
     <name>HighWatch</name>
     <description>
         Highwatch traffic monitoring application for Android/IOS/Browsers.

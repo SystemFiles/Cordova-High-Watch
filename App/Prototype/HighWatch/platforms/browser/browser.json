@@ -51,9 +51,6 @@
     },
     "cordova-plugin-device": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
-    },
-    "cordova-plugin-keyboard": {
-      "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   },
   "dependent_plugins": {},
@@ -320,14 +317,6 @@
       "id": "cordova-plugin-device.DeviceProxy",
       "pluginId": "cordova-plugin-device",
       "runs": true
-    },
-    {
-      "file": "plugins/cordova-plugin-keyboard/www/keyboard.js",
-      "id": "cordova-plugin-keyboard.keyboard",
-      "pluginId": "cordova-plugin-keyboard",
-      "clobbers": [
-        "window.Keyboard"
-      ]
     }
   ],
   "plugin_metadata": {
@@ -341,7 +330,6 @@
     "cordova-plugin-inappbrowser": "3.0.0",
     "cordova-plugin-customurlscheme": "4.4.0",
     "cordova-plugin-network-information": "2.0.1",
-    "cordova-plugin-device": "2.0.2",
-    "cordova-plugin-keyboard": "1.2.0"
+    "cordova-plugin-device": "2.0.2"
   }
 }

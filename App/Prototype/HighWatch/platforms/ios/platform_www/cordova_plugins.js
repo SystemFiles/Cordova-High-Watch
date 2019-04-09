@@ -246,14 +246,6 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "clobbers": [
         "device"
       ]
-    },
-    {
-      "id": "cordova-plugin-keyboard.keyboard",
-      "file": "plugins/cordova-plugin-keyboard/www/keyboard.js",
-      "pluginId": "cordova-plugin-keyboard",
-      "clobbers": [
-        "window.Keyboard"
-      ]
     }
   ];
   module.exports.metadata = {
@@ -268,7 +260,6 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cordova-plugin-whitelist": "1.3.3",
     "cordova-support-android-plugin": "1.0.1",
     "cordova-universal-links-plugin": "1.2.1",
-    "cordova-plugin-device": "2.0.2",
-    "cordova-plugin-keyboard": "1.2.0"
+    "cordova-plugin-device": "2.0.2"
   };
 });
