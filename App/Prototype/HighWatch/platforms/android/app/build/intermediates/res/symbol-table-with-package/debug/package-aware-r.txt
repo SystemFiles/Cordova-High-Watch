@@ -2,8 +2,10 @@ ca.sykesdev.highwatch
 drawable ic_action_next_item
 drawable ic_action_previous_item
 drawable ic_action_remove
+drawable icon
 drawable screen
 mipmap ic_launcher
+mipmap icon
 string activity_name
 string app_name
 string launcher_name
