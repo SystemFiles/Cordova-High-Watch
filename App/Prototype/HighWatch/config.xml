@@ -43,7 +43,7 @@
     </universal-links>
     
     <preference name="AndroidLaunchMode" value="singleTask" />
-    <preference name="android-minSdkVersion" value="27" />
+    <preference name="android-minSdkVersion" value="26" />
 </widget>
 
 

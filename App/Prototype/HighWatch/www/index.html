@@ -128,18 +128,18 @@
                     <div class="center"></div>
                 </ons-toolbar>
                 
-                <div style="text-align: center; margin-top: 50%;">
+                <div id="login-form" style="text-align: center; margin-top: 20%;">
                     <p>
-                        <ons-input id="username" modifier="underbar" placeholder="Username" float></ons-input>
+                        <ons-input id="username" class="login-input" modifier="underbar" placeholder="Email" float></ons-input>
                     </p>
                     <p>
-                        <ons-input id="password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
+                        <ons-input id="password" class="login-input" modifier="underbar" type="password" placeholder="Password" float></ons-input>
                     </p>
                     <p>
                         <button id="forgotPass-btn" class="btn btn-link" type="button">Forgot password?</button>
                     </p>
                     <div id='error-login-alert' style="display: none" class='alert alert-danger' role='alert'></div>
-                    <p class="fixed-bottom" style="margin-top: 30px;">
+                    <p id="login-btn-group" class="fixed-bottom" style="margin-top: 30px;">
                         <ons-button id="emailLogin-btn" modifier="material">Login</ons-button>
                         <ons-button id="emailRegister-btn" modifier="material">Register Account</ons-button>
                     </p>

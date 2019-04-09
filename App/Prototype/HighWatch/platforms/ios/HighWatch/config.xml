@@ -45,6 +45,9 @@
     <feature name="Device">
         <param name="ios-package" value="CDVDevice" />
     </feature>
+    <feature name="Keyboard">
+        <param name="ios-package" onload="true" value="CDVKeyboard" />
+    </feature>
     <name>HighWatch</name>
     <description>
         Highwatch traffic monitoring application for Android/IOS/Browsers.
@@ -85,5 +88,5 @@
     <preference name="PaginationBreakingMode" value="page" />
     <preference name="PaginationMode" value="unpaginated" />
     <preference name="AndroidLaunchMode" value="singleTask" />
-    <preference name="android-minSdkVersion" value="27" />
+    <preference name="android-minSdkVersion" value="26" />
 </widget>

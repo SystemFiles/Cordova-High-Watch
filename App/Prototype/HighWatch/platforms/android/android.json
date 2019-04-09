@@ -85,6 +85,16 @@
             }
           ]
         }
+      },
+      "config.xml": {
+        "parents": {
+          "/*": [
+            {
+              "xml": "<feature name=\"Keyboard\"><param name=\"android-package\" onload=\"true\" value=\"org.apache.cordova.labs.keyboard.Keyboard\" /></feature>",
+              "count": 1
+            }
+          ]
+        }
       }
     }
   },
@@ -127,6 +137,9 @@
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     },
     "cordova-plugin-device": {
+      "PACKAGE_NAME": "ca.sykesdev.highwatch"
+    },
+    "cordova-plugin-keyboard": {
       "PACKAGE_NAME": "ca.sykesdev.highwatch"
     }
   },
@@ -378,6 +391,14 @@
       "clobbers": [
         "device"
       ]
+    },
+    {
+      "id": "cordova-plugin-keyboard.keyboard",
+      "file": "plugins/cordova-plugin-keyboard/www/keyboard.js",
+      "pluginId": "cordova-plugin-keyboard",
+      "clobbers": [
+        "window.Keyboard"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -392,6 +413,7 @@
     "cordova-plugin-inappbrowser": "3.0.0",
     "cordova-plugin-customurlscheme": "4.4.0",
     "cordova-plugin-network-information": "2.0.1",
-    "cordova-plugin-device": "2.0.2"
+    "cordova-plugin-device": "2.0.2",
+    "cordova-plugin-keyboard": "1.2.0"
   }
 }

@@ -293,6 +293,9 @@ var app = {
                       });
                   });
                   
+                  // TODO: Setup login fix for virtual keyboard
+                  
+                  
                   page.querySelector('#forgotPass-btn').addEventListener('click', function() {
                       var email = document.getElementById('username').value;
                       
@@ -673,7 +676,7 @@ var app = {
                     for (var j=0; j < numSaved; j++) {
                         var roadComp = savedList[j];
                         for (var i=0; i < numEvents; i++) {
-                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.02) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.02) == true));
+                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.01) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.01) == true));
                             
                             // Filter out each matched road to alert
                             if (isInRange) {

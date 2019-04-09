@@ -34,6 +34,9 @@
     <feature name="Device">
         <param name="android-package" value="org.apache.cordova.device.Device" />
     </feature>
+    <feature name="Keyboard">
+        <param name="android-package" onload="true" value="org.apache.cordova.labs.keyboard.Keyboard" />
+    </feature>
     <name>HighWatch</name>
     <description>
         Highwatch traffic monitoring application for Android/IOS/Browsers.
@@ -61,5 +64,5 @@
     <allow-intent href="market:*" />
     <preference name="loglevel" value="DEBUG" />
     <preference name="AndroidLaunchMode" value="singleTask" />
-    <preference name="android-minSdkVersion" value="27" />
+    <preference name="android-minSdkVersion" value="26" />
 </widget>
