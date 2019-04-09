@@ -140,7 +140,8 @@ var app = {
 
             } else if (page.id === 'targetResult') {
                 // The end page
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                
+                page.querySelector('ons-toolbar .center').innerHTML = page.data.title.slice(0,24) + ((page.data.title.length > 24) ? "..." : "");
 
                 app.getDataByUID(page.data.id, page.data.title).then(function(result) {
                     $("#camImage").attr('src', result.url);
