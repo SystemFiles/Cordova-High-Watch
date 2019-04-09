@@ -53,7 +53,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.firebase.cordova</string>
+				<string>ca.sykesdev.highwatch</string>
 			</array>
 		</dict>
 	</array>
