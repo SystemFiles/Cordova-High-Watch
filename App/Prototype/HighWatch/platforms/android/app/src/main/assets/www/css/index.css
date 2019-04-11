@@ -161,8 +161,8 @@ ons-button {
 #emailRegister-btn {
     width: 100%;
     text-align: center;
-    background-color: #00cec9;
-    color: #333;
+    background-color: #59ABE3;
+    color: #fff;
     padding: 5px 20px;
     border-radius: 0;
     margin-bottom: 0;
@@ -174,4 +174,12 @@ ons-toolbar .center {
 
 ons-back-button {
     font-size: 20px;
+}
+
+.hidden-id {
+    font-size: 0;
+}
+
+#camImage {
+    object-fit: contain;
 }

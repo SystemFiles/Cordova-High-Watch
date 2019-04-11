@@ -455,11 +455,11 @@ var app = {
                     var cameras_uid = httpResponse.filter(function (item) {
                         switch (searchtype) {
                             case "uid":
-                                return item.Id.match(searchterm);
+                                return item.Id.toLowerCase().match(searchterm.toLowerCase());
                             case "road_name":
-                                return item.Description.match(searchterm);
+                                return item.Description.toLowerCase().match(searchterm.toLowerCase());
                             case "city_name":
-                                return item.CityName.match(searchterm);
+                                return item.CityName.toLowerCase().match(searchterm.toLowerCase());
                             default:
                                 ons.notification.alert("Invalid Search Type...Cannot find anything!");
                         }
@@ -470,7 +470,7 @@ var app = {
                     var numReturnedCams = cameras_uid.length;
 
                     for (var i=0; i < numReturnedCams; i++) {
-                        camList.push("[" + cameras_uid[i].Id + "] " + cameras_uid[i].Description);
+                        camList.push("<span class='hidden-id'>[" + cameras_uid[i].Id + "]</span> " + cameras_uid[i].Description);
                     }
 
                     resolve(camList); // Return the list of cameras
