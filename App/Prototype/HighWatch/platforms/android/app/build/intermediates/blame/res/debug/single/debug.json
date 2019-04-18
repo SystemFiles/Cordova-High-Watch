@@ -36,12 +36,12 @@
         "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-hdpi/ic_action_remove.png"
     },
     {
-        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_action_previous_item.png.flat",
-        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-xhdpi/ic_action_previous_item.png"
-    },
-    {
         "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-land-ldpi_screen.png.flat",
         "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-land-ldpi/screen.png"
+    },
+    {
+        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_action_previous_item.png.flat",
+        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-xhdpi/ic_action_previous_item.png"
     },
     {
         "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/mipmap-hdpi-v26_ic_launcher.png.flat",
@@ -92,12 +92,12 @@
         "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable/icon.png"
     },
     {
-        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi-v26_ic_launcher.png.flat",
-        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/mipmap-xxxhdpi-v26/ic_launcher.png"
-    },
-    {
         "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_icon.png.flat",
         "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/mipmap-xxxhdpi/icon.png"
+    },
+    {
+        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi-v26_ic_launcher.png.flat",
+        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/mipmap-xxxhdpi-v26/ic_launcher.png"
     },
     {
         "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-xhdpi_icon.png.flat",
@@ -112,16 +112,16 @@
         "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/mipmap-xhdpi-v26/ic_launcher.png"
     },
     {
-        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/xml_config.xml.flat",
-        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/xml/config.xml"
+        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-xxxhdpi_icon.png.flat",
+        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-xxxhdpi/icon.png"
     },
     {
         "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/mipmap-ldpi_icon.png.flat",
         "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/mipmap-ldpi/icon.png"
     },
     {
-        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/drawable-xxxhdpi_icon.png.flat",
-        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/drawable-xxxhdpi/icon.png"
+        "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/xml_config.xml.flat",
+        "source": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/src/main/res/xml/config.xml"
     },
     {
         "merged": "/Users/bensykes/Nextcloud/Sem4Courses/Mobile Web App Dev/Assignments/Cordova-High-Watch/App/Prototype/HighWatch/platforms/android/app/build/intermediates/res/merged/debug/mipmap-xxhdpi-v26_ic_launcher.png.flat",

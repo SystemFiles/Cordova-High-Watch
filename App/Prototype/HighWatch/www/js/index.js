@@ -1,8 +1,9 @@
 var app = {
+    // Hold current user information as well as a loggedIn global so we know quickly for logged in checks for user features of the app.
     currentUser: null,
     loggedIn: false,
     
-    // Application Constructor
+    // Application Initializer
     initialize: function() {
         // Handle cases where user is not connected to the internet which is required for everything in this app. (Uses Cordova-plugin-network-information)
         document.addEventListener('offline', function() {
@@ -13,6 +14,7 @@ var app = {
             app.hideOffline();
         }, false);
         
+        // Adds the google login button if the device is iOS
         document.addEventListener('deviceready', function() {
             // Hide login buttons that don't apply to ios
             if (device.platform === 'iOS') {
@@ -20,7 +22,7 @@ var app = {
             }
         });
         
-        // Event is after deviceready and library loaded...
+        // (SETS UP PAGES/VIEWS FOR THE APP)
         document.addEventListener('init', function(event) {
             // Handles page navigation (For different views)
             var navigator = document.querySelector('#navigator')
@@ -318,6 +320,7 @@ var app = {
         });
     },
     
+    // Decodes the google polyline encoded coordinate list used to find matching road conditions
     decodePolyline: function(encoded) {
         // array that holds the points
         var points=[ ]
@@ -351,12 +354,14 @@ var app = {
         return points
     },
 
+    // Returns simple boolean for if x, y are within allowable range
     inRange: function(x, y, allowable) {
         var sum = Math.abs(x - y);
         var allowed = ((allowable * -1 <= sum) && (sum <= allowable));
         return allowed;
     },
 
+    // Returns a road condition that meets the requirement of 2km range to camera
     coordinatesInRange: function(decodedPoly, comparison, roadCompare) {
         return new Promise(function(resolve, reject) {
             var length = decodedPoly.length; // Cache length
@@ -374,6 +379,7 @@ var app = {
         });
     },
 
+    // Returns the matching road conditions for the polyline encoded coordinate system for each road result in JSON to find matching road conditions for road containing camera at lat, long.
     findMatchingRoadConditions: function(jsonResult, lat, long) {
         return new Promise(function(resolve, reject) {
             var jsonLength = jsonResult.length;
@@ -399,6 +405,7 @@ var app = {
         });
     },
 
+    // Returns all road condition information from API
     getRoadConditionsJSON: function() {
         return new Promise(function(resolve, reject) {
             var conditionURL = "https://511on.ca/api/v2/get/roadconditions?format=json";
@@ -410,6 +417,7 @@ var app = {
         });
     },
     
+    // Returns all alert events from API
     getEventsJSON: function() {
         return new Promise(function(resolve, reject) {
             var conditionURL = "https://511on.ca/api/v2/get/event?format=json";
@@ -421,7 +429,8 @@ var app = {
             });
         });
     },
-
+    
+    // Sends an http request to the given URL specified
     sendRequest: function(url) {
         return new Promise(function(resolve, reject) {
             const Http = new XMLHttpRequest();
@@ -438,6 +447,7 @@ var app = {
         });
     },
 
+    // Performs a search using a given search-term and search type.
     searchCategory: function(searchterm, searchtype) {
         return new Promise(function(resolve, reject) {
             var getURL = "https://511on.ca/api/v2/get/";
@@ -484,6 +494,7 @@ var app = {
         });
     },
 
+    // Build a list of results for search query
     buildResultList: function(list) {
         // Check if list is populated or not
         if (list != null && list.length >= 1 ) {
@@ -498,6 +509,7 @@ var app = {
         }
     },
 
+    // Return data by UID search to API
     getDataByUID: function(uid, desc) {
         return new Promise(function(resolve, reject) {
             var getURL = "https://511on.ca/api/v2/get/";
@@ -554,7 +566,8 @@ var app = {
             });
         });
     },
-
+    
+    // Saves the current needed road information to the firebase database
     saveRoadToFirebase: function(roadUID, roadName, latitude, longitude) {
         return new Promise(function(resolve, reject) {
             var newRoad = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(roadUID);
@@ -570,6 +583,7 @@ var app = {
         });
     },
     
+    // Removes a road from the database
     deleteRoadFromFirebase: function(id) {
         return new Promise(function(resolve, reject) {
             var road = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(id);
@@ -578,6 +592,7 @@ var app = {
         });
     },
     
+    // Retrieves all roads for the logged in user from firebase
     getRoadFromFirebase: function() {
         return new Promise(function(resolve, reject) {
             var savedList = [];
@@ -594,6 +609,7 @@ var app = {
         });
     },
     
+    // Performs Google Login.
     userLogin: function() {
         return new Promise(function(resolve, reject) {
             // Firebase authentication provider
@@ -613,6 +629,7 @@ var app = {
         }); 
     },
     
+    // Performs Google logout
     userLogout: function() {
         return new Promise(function(resolve, reject) {
             firebase.auth().signOut().then(function() {
@@ -623,16 +640,19 @@ var app = {
         });
     },
     
+    // Shows an offline message if the user is offline
     showOffline: function() {
         var modal = document.getElementById('offlineNotify');
         modal.show();
     },
     
+    // Removes offline message if user is no longer offline
     hideOffline: function() {
         var modal = document.getElementById('offlineNotify');
         modal.hide();
     },
     
+    // Displays all the alerts for the alert page.
     displayAlerts: function() {
         var $alertsList = $('#alert-list');
         var $listItems = "";
@@ -662,6 +682,7 @@ var app = {
         });
     },
     
+    // Fetch all the alerts using saved roads from firebase database
     fetchAlerts: function() {
         return new Promise(function(resolve, reject) {
             app.getRoadFromFirebase().then(function(savedList) {
@@ -695,4 +716,6 @@ var app = {
     }
 };
 
+
+// Init the app
 app.initialize();
