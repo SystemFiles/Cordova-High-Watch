@@ -1,8 +1,9 @@
 var app = {
+    // Hold current user information as well as a loggedIn global so we know quickly for logged in checks for user features of the app.
     currentUser: null,
     loggedIn: false,
     
-    // Application Constructor
+    // Application Initializer
     initialize: function() {
         // Handle cases where user is not connected to the internet which is required for everything in this app. (Uses Cordova-plugin-network-information)
         document.addEventListener('offline', function() {
@@ -13,7 +14,15 @@ var app = {
             app.hideOffline();
         }, false);
         
-        // Event is after deviceready and library loaded...
+        // Adds the google login button if the device is iOS
+        document.addEventListener('deviceready', function() {
+            // Hide login buttons that don't apply to ios
+            if (device.platform === 'iOS') {
+                $('#google-login-btn').hide();
+            }
+        });
+        
+        // (SETS UP PAGES/VIEWS FOR THE APP)
         document.addEventListener('init', function(event) {
             // Handles page navigation (For different views)
             var navigator = document.querySelector('#navigator')
@@ -46,52 +55,59 @@ var app = {
                 
                 page.querySelector('#login-btn').addEventListener('click', function() {
                     // Handle accounts login/logout...
-                    var $signedInOutToast = $('#signedInOutToast');
-                    if (device.platform === "iOS") {
-                        // If iOS since google auth does not work due to a security issue in iOS with google, we will use manual sign-in method.
-                        if (!app.loggedIn) {
-                            // Log in
-                            navigator.pushPage('loginPage.html', {data: {title: 'Login/Register'}});
-                        } else {
-                            // Log out
-                            firebase.auth().signOut().then(function() {
-                                ons.notification.alert("Successfully signed out!");
-                                
-                                // Reset app variables
-                                app.loggedIn = false;
-                                app.currentUser = null;
-                                
-                                // Reset login icon
-                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
-                            }).catch(function(error) {
-                                ons.notification.alert(error);
-                            });
-                        }
+                    if (!app.loggedIn) {
+                        // Log in
+                        navigator.pushPage('loginPage.html', {data: {title: 'Login/Register'}});
                     } else {
-                        // If Android OS then login with Google Auth
-                        if (!app.loggedIn) {
+                        // Log out
+                        firebase.auth().signOut().then(function() {
+                            ons.notification.alert("Successfully signed out!");
+                                
+                            // Reset app variables
+                            app.loggedIn = false;
+                            app.currentUser = null;
+                                
+                            // Reset login icon
+                            $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
+                            
+                            // Re-show google login button (ONLY ON ANDROID)
+                            if (device.platform === 'Android') {
+                                $('#google-login-btn').show();
+                            }
+                        }).catch(function(error) {
+                            ons.notification.alert(error);
+                        });
+                    }
+                });
+                
+                page.querySelector('#google-login-btn').addEventListener('click', function() {
+                    if (!app.loggedIn) {
                             app.userLogin().then(function(result) {
-                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
-
+                                $('#google-login-btn').find('ons-icon').replaceWith("<span class='fas fa-sign-out-alt'></span>");
+                                
                                 app.loggedIn = true;
                                 app.currentUser = result;
 
                                 ons.notification.alert("Thanks for signing in " +
                                                       app.currentUser.displayName + "!");
+                                
+                                // Hide custom email login
+                                $('#login-btn').hide();
                             });
                         } else {
                             app.userLogout().then(function() {
                                 app.loggedIn = false;
                                 app.currentUser = null;
                                 ons.notification.alert("Signed out successfully!");
-
-                                // Change the icon back to login button icon
-                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
+                                
+                                $('#google-login-btn').find('span').replaceWith("<ons-icon icon='md-google'></ons-icon>");
+                                
+                                // Re-show custom login button
+                                $('#login-btn').show();
                             }).catch(function() {
                                 ons.notification.alert("Error attempting to sign out..");
                             });
                         }
-                    }
                 });
 
             } else if (page.id === 'results') {
@@ -126,7 +142,8 @@ var app = {
 
             } else if (page.id === 'targetResult') {
                 // The end page
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                
+                page.querySelector('ons-toolbar .center').innerHTML = page.data.title.slice(0,24) + ((page.data.title.length > 24) ? "..." : "");
 
                 app.getDataByUID(page.data.id, page.data.title).then(function(result) {
                     $("#camImage").attr('src', result.url);
@@ -230,6 +247,9 @@ var app = {
                           };
 
                           ons.notification.alert("Successfully logged in!");
+                          
+                          // Hide google login btn while using custom email login
+                          $('#google-login-btn').hide();
 
                           // Replace login icon
                           $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
@@ -300,6 +320,7 @@ var app = {
         });
     },
     
+    // Decodes the google polyline encoded coordinate list used to find matching road conditions
     decodePolyline: function(encoded) {
         // array that holds the points
         var points=[ ]
@@ -333,12 +354,14 @@ var app = {
         return points
     },
 
+    // Returns simple boolean for if x, y are within allowable range
     inRange: function(x, y, allowable) {
         var sum = Math.abs(x - y);
         var allowed = ((allowable * -1 <= sum) && (sum <= allowable));
         return allowed;
     },
 
+    // Returns a road condition that meets the requirement of 2km range to camera
     coordinatesInRange: function(decodedPoly, comparison, roadCompare) {
         return new Promise(function(resolve, reject) {
             var length = decodedPoly.length; // Cache length
@@ -356,6 +379,7 @@ var app = {
         });
     },
 
+    // Returns the matching road conditions for the polyline encoded coordinate system for each road result in JSON to find matching road conditions for road containing camera at lat, long.
     findMatchingRoadConditions: function(jsonResult, lat, long) {
         return new Promise(function(resolve, reject) {
             var jsonLength = jsonResult.length;
@@ -381,6 +405,7 @@ var app = {
         });
     },
 
+    // Returns all road condition information from API
     getRoadConditionsJSON: function() {
         return new Promise(function(resolve, reject) {
             var conditionURL = "https://511on.ca/api/v2/get/roadconditions?format=json";
@@ -392,6 +417,7 @@ var app = {
         });
     },
     
+    // Returns all alert events from API
     getEventsJSON: function() {
         return new Promise(function(resolve, reject) {
             var conditionURL = "https://511on.ca/api/v2/get/event?format=json";
@@ -403,7 +429,8 @@ var app = {
             });
         });
     },
-
+    
+    // Sends an http request to the given URL specified
     sendRequest: function(url) {
         return new Promise(function(resolve, reject) {
             const Http = new XMLHttpRequest();
@@ -420,6 +447,7 @@ var app = {
         });
     },
 
+    // Performs a search using a given search-term and search type.
     searchCategory: function(searchterm, searchtype) {
         return new Promise(function(resolve, reject) {
             var getURL = "https://511on.ca/api/v2/get/";
@@ -437,11 +465,11 @@ var app = {
                     var cameras_uid = httpResponse.filter(function (item) {
                         switch (searchtype) {
                             case "uid":
-                                return item.Id.match(searchterm);
+                                return item.Id.toLowerCase().match(searchterm.toLowerCase());
                             case "road_name":
-                                return item.Description.match(searchterm);
+                                return item.Description.toLowerCase().match(searchterm.toLowerCase());
                             case "city_name":
-                                return item.CityName.match(searchterm);
+                                return item.CityName.toLowerCase().match(searchterm.toLowerCase());
                             default:
                                 ons.notification.alert("Invalid Search Type...Cannot find anything!");
                         }
@@ -452,7 +480,7 @@ var app = {
                     var numReturnedCams = cameras_uid.length;
 
                     for (var i=0; i < numReturnedCams; i++) {
-                        camList.push("[" + cameras_uid[i].Id + "] " + cameras_uid[i].Description);
+                        camList.push("<span class='hidden-id'>[" + cameras_uid[i].Id + "]</span> " + cameras_uid[i].Description);
                     }
 
                     resolve(camList); // Return the list of cameras
@@ -466,6 +494,7 @@ var app = {
         });
     },
 
+    // Build a list of results for search query
     buildResultList: function(list) {
         // Check if list is populated or not
         if (list != null && list.length >= 1 ) {
@@ -480,6 +509,7 @@ var app = {
         }
     },
 
+    // Return data by UID search to API
     getDataByUID: function(uid, desc) {
         return new Promise(function(resolve, reject) {
             var getURL = "https://511on.ca/api/v2/get/";
@@ -536,7 +566,8 @@ var app = {
             });
         });
     },
-
+    
+    // Saves the current needed road information to the firebase database
     saveRoadToFirebase: function(roadUID, roadName, latitude, longitude) {
         return new Promise(function(resolve, reject) {
             var newRoad = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(roadUID);
@@ -552,6 +583,7 @@ var app = {
         });
     },
     
+    // Removes a road from the database
     deleteRoadFromFirebase: function(id) {
         return new Promise(function(resolve, reject) {
             var road = firebase.database().ref('users/' + app.currentUser.uid + '/saved/').child(id);
@@ -560,6 +592,7 @@ var app = {
         });
     },
     
+    // Retrieves all roads for the logged in user from firebase
     getRoadFromFirebase: function() {
         return new Promise(function(resolve, reject) {
             var savedList = [];
@@ -576,6 +609,7 @@ var app = {
         });
     },
     
+    // Performs Google Login.
     userLogin: function() {
         return new Promise(function(resolve, reject) {
             // Firebase authentication provider
@@ -595,6 +629,7 @@ var app = {
         }); 
     },
     
+    // Performs Google logout
     userLogout: function() {
         return new Promise(function(resolve, reject) {
             firebase.auth().signOut().then(function() {
@@ -605,16 +640,19 @@ var app = {
         });
     },
     
+    // Shows an offline message if the user is offline
     showOffline: function() {
         var modal = document.getElementById('offlineNotify');
         modal.show();
     },
     
+    // Removes offline message if user is no longer offline
     hideOffline: function() {
         var modal = document.getElementById('offlineNotify');
         modal.hide();
     },
     
+    // Displays all the alerts for the alert page.
     displayAlerts: function() {
         var $alertsList = $('#alert-list');
         var $listItems = "";
@@ -644,6 +682,7 @@ var app = {
         });
     },
     
+    // Fetch all the alerts using saved roads from firebase database
     fetchAlerts: function() {
         return new Promise(function(resolve, reject) {
             app.getRoadFromFirebase().then(function(savedList) {
@@ -656,7 +695,7 @@ var app = {
                     for (var j=0; j < numSaved; j++) {
                         var roadComp = savedList[j];
                         for (var i=0; i < numEvents; i++) {
-                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.1) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.1) == true));
+                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.01) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.01) == true));
                             
                             // Filter out each matched road to alert
                             if (isInRange) {
@@ -677,4 +716,6 @@ var app = {
     }
 };
 
+
+// Init the app
 app.initialize();

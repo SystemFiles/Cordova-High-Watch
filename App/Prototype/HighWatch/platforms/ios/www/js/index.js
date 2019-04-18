@@ -13,6 +13,13 @@ var app = {
             app.hideOffline();
         }, false);
         
+        document.addEventListener('deviceready', function() {
+            // Hide login buttons that don't apply to ios
+            if (device.platform === 'iOS') {
+                $('#google-login-btn').hide();
+            }
+        });
+        
         // Event is after deviceready and library loaded...
         document.addEventListener('init', function(event) {
             // Handles page navigation (For different views)
@@ -46,52 +53,59 @@ var app = {
                 
                 page.querySelector('#login-btn').addEventListener('click', function() {
                     // Handle accounts login/logout...
-                    var $signedInOutToast = $('#signedInOutToast');
-                    if (device.platform === "iOS") {
-                        // If iOS since google auth does not work due to a security issue in iOS with google, we will use manual sign-in method.
-                        if (!app.loggedIn) {
-                            // Log in
-                            navigator.pushPage('loginPage.html', {data: {title: 'Login/Register'}});
-                        } else {
-                            // Log out
-                            firebase.auth().signOut().then(function() {
-                                ons.notification.alert("Successfully signed out!");
-                                
-                                // Reset app variables
-                                app.loggedIn = false;
-                                app.currentUser = null;
-                                
-                                // Reset login icon
-                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
-                            }).catch(function(error) {
-                                ons.notification.alert(error);
-                            });
-                        }
+                    if (!app.loggedIn) {
+                        // Log in
+                        navigator.pushPage('loginPage.html', {data: {title: 'Login/Register'}});
                     } else {
-                        // If Android OS then login with Google Auth
-                        if (!app.loggedIn) {
+                        // Log out
+                        firebase.auth().signOut().then(function() {
+                            ons.notification.alert("Successfully signed out!");
+                                
+                            // Reset app variables
+                            app.loggedIn = false;
+                            app.currentUser = null;
+                                
+                            // Reset login icon
+                            $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
+                            
+                            // Re-show google login button (ONLY ON ANDROID)
+                            if (device.platform === 'Android') {
+                                $('#google-login-btn').show();
+                            }
+                        }).catch(function(error) {
+                            ons.notification.alert(error);
+                        });
+                    }
+                });
+                
+                page.querySelector('#google-login-btn').addEventListener('click', function() {
+                    if (!app.loggedIn) {
                             app.userLogin().then(function(result) {
-                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
-
+                                $('#google-login-btn').find('ons-icon').replaceWith("<span class='fas fa-sign-out-alt'></span>");
+                                
                                 app.loggedIn = true;
                                 app.currentUser = result;
 
                                 ons.notification.alert("Thanks for signing in " +
                                                       app.currentUser.displayName + "!");
+                                
+                                // Hide custom email login
+                                $('#login-btn').hide();
                             });
                         } else {
                             app.userLogout().then(function() {
                                 app.loggedIn = false;
                                 app.currentUser = null;
                                 ons.notification.alert("Signed out successfully!");
-
-                                // Change the icon back to login button icon
-                                $('#login-btn').find('span').first().replaceWith("<span class='fas fa-user'></span>");
+                                
+                                $('#google-login-btn').find('span').replaceWith("<ons-icon icon='md-google'></ons-icon>");
+                                
+                                // Re-show custom login button
+                                $('#login-btn').show();
                             }).catch(function() {
                                 ons.notification.alert("Error attempting to sign out..");
                             });
                         }
-                    }
                 });
 
             } else if (page.id === 'results') {
@@ -126,7 +140,8 @@ var app = {
 
             } else if (page.id === 'targetResult') {
                 // The end page
-                page.querySelector('ons-toolbar .center').innerHTML = page.data.title;
+                
+                page.querySelector('ons-toolbar .center').innerHTML = page.data.title.slice(0,24) + ((page.data.title.length > 24) ? "..." : "");
 
                 app.getDataByUID(page.data.id, page.data.title).then(function(result) {
                     $("#camImage").attr('src', result.url);
@@ -230,6 +245,9 @@ var app = {
                           };
 
                           ons.notification.alert("Successfully logged in!");
+                          
+                          // Hide google login btn while using custom email login
+                          $('#google-login-btn').hide();
 
                           // Replace login icon
                           $('#login-btn').find('span').first().replaceWith("<span class='fas fa-sign-out-alt'></span>");
@@ -437,11 +455,11 @@ var app = {
                     var cameras_uid = httpResponse.filter(function (item) {
                         switch (searchtype) {
                             case "uid":
-                                return item.Id.match(searchterm);
+                                return item.Id.toLowerCase().match(searchterm.toLowerCase());
                             case "road_name":
-                                return item.Description.match(searchterm);
+                                return item.Description.toLowerCase().match(searchterm.toLowerCase());
                             case "city_name":
-                                return item.CityName.match(searchterm);
+                                return item.CityName.toLowerCase().match(searchterm.toLowerCase());
                             default:
                                 ons.notification.alert("Invalid Search Type...Cannot find anything!");
                         }
@@ -452,7 +470,7 @@ var app = {
                     var numReturnedCams = cameras_uid.length;
 
                     for (var i=0; i < numReturnedCams; i++) {
-                        camList.push("[" + cameras_uid[i].Id + "] " + cameras_uid[i].Description);
+                        camList.push("<span class='hidden-id'>[" + cameras_uid[i].Id + "]</span> " + cameras_uid[i].Description);
                     }
 
                     resolve(camList); // Return the list of cameras
@@ -656,7 +674,7 @@ var app = {
                     for (var j=0; j < numSaved; j++) {
                         var roadComp = savedList[j];
                         for (var i=0; i < numEvents; i++) {
-                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.1) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.1) == true));
+                            var isInRange = ((app.inRange(eventsJSON[i].Latitude, roadComp.latitude, 0.01) == true) && (app.inRange(eventsJSON[i].Longitude, roadComp.longitude, 0.01) == true));
                             
                             // Filter out each matched road to alert
                             if (isInRange) {

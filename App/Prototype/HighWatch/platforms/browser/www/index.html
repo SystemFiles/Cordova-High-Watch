@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-<!--        <meta http-equiv="Content-Security-Policy" content="default-src *; img-src *; style-src 'self' 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">-->
-
         <meta http-equiv="Content-Security-Policy" content="default-src * gap://ready data:; img-src * 'self' data:; style-src * 'unsafe-inline'; script-src * 'self' 'unsafe-inline' 'unsafe-eval'; ">
         
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -115,6 +113,35 @@
                     </div>
                 </div>
                 
+                <ons-fab id="google-login-btn" position="bottom right">
+                    <ons-icon icon="md-google"></ons-icon>
+                </ons-fab>
+            </ons-page>
+        </template>
+        
+        <template id="loginPage.html">
+            <ons-page id="loginPage">
+                <ons-toolbar>
+                    <div class="left"><ons-back-button>Back</ons-back-button></div>
+                    <div class="center"></div>
+                </ons-toolbar>
+                
+                <div id="login-form" style="text-align: center; margin-top: 20%;">
+                    <p>
+                        <ons-input id="username" class="login-input" modifier="underbar" placeholder="Email" float></ons-input>
+                    </p>
+                    <p>
+                        <ons-input id="password" class="login-input" modifier="underbar" type="password" placeholder="Password" float></ons-input>
+                    </p>
+                    <p>
+                        <button id="forgotPass-btn" class="btn btn-link" type="button">Forgot password?</button>
+                    </p>
+                    <div id='error-login-alert' style="display: none" class='alert alert-danger' role='alert'></div>
+                    <p id="login-btn-group" class="fixed-bottom" style="margin-top: 30px;">
+                        <ons-button id="emailLogin-btn" modifier="material">Login</ons-button>
+                        <ons-button id="emailRegister-btn" modifier="material">Create Account</ons-button>
+                    </p>
+                </div>
             </ons-page>
         </template>
         
@@ -154,7 +181,7 @@
                 <div class="container-fluid">
                     <div class="row text-center">
                         <div style="margin: auto" class="img">
-                            <img id="camImage" src="img/500x500_place.png" width="500px" height="500px" />
+                            <img id="camImage" src="img/loading.gif" width="500px" height="48%" />
                         </div>
                     </div>
                 </div>

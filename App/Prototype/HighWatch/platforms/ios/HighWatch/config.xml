@@ -25,6 +25,9 @@
     <feature name="BuildInfo">
         <param name="ios-package" value="CDVBuildInfo" />
     </feature>
+    <feature name="Device">
+        <param name="ios-package" value="CDVDevice" />
+    </feature>
     <feature name="File">
         <param name="ios-package" value="CDVFile" />
         <param name="onload" value="true" />
@@ -41,9 +44,6 @@
     <feature name="UniversalLinks">
         <param name="ios-package" value="CULPlugin" />
         <param name="onload" value="true" />
-    </feature>
-    <feature name="Device">
-        <param name="ios-package" value="CDVDevice" />
     </feature>
     <name>HighWatch</name>
     <description>
@@ -85,5 +85,5 @@
     <preference name="PaginationBreakingMode" value="page" />
     <preference name="PaginationMode" value="unpaginated" />
     <preference name="AndroidLaunchMode" value="singleTask" />
-    <preference name="android-minSdkVersion" value="27" />
+    <preference name="android-minSdkVersion" value="26" />
 </widget>
